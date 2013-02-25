@@ -13,9 +13,16 @@ use Symfony\Component\Yaml\Yaml;
 class Bootstrap
 {
     private static $instance = false;
-    private $valid_config_keys = array('environment', 'config_vars', 'global_vars', 'db_config');
+    private $valid_config_keys = array(
+        'environment',
+        'debug',
+        'system_path',
+        'config_vars',
+        'global_vars',
+        'db_config'
+    );
 
-    public $min_php_version = '5.4.0';
+    public $min_php_version = '5.3.2';
     public $environment     = 'development';
     public $debug           = 0;
     public $global_vars     = array();
@@ -75,6 +82,7 @@ class Bootstrap
         // Set defaults
         $this->setConfigVars(false, true);
         $this->setGlobalVars(false, true);
+
     }
 
     /**
@@ -359,7 +367,11 @@ class Bootstrap
             case 'yml':
             case 'yaml':
                 $yaml_array = Yaml::parse($file);
+
+                // Top level Vars
                 $this->arrayToProps($yaml_array, false, $parent_key);
+
+                // Environment Vars
                 if (isset($yaml_array[$this->environment])) {
                     $this->arrayToProps($yaml_array[$this->environment], false, $parent_key);
                 }
@@ -384,7 +396,7 @@ class Bootstrap
             $array = array($parent_key => $array);
         }
         foreach ($array as $key => $value) {
-            if (in_array($key, $valid_keys) && $value) {
+            if (in_array($key, $valid_keys) && $value !== null) {
                 if (isset($this->$key) && is_array($this->$key) && is_array($value)) {
                     $this->$key = array_merge($this->$key, $value);
                 } else {
