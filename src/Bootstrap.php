@@ -31,12 +31,12 @@ class Bootstrap
     );
     public $db_config = array(
         'dbdriver' => 'mysql',
-        'pconnect' => FALSE,
+        'pconnect' => false,
         'dbprefix' => 'exp_',
         'swap_pre' => 'exp_',
-        'db_debug' => TRUE,
-        'cache_on' => FALSE,
-        'autoinit' => FALSE,
+        'db_debug' => true,
+        'cache_on' => false,
+        'autoinit' => false,
         'char_set' => 'utf8',
         'dbcollat' => 'utf8_general_ci',
     );
@@ -75,15 +75,18 @@ class Bootstrap
         $this->public_cache_path     = $this->base_path . 'cache/';
         $this->db_config['cachedir'] = $this->system_path . 'cache/db_cache/';
 
+        // Set defaults
+        $this->setConfigVars(false, true);
+        $this->setGlobalVars(false, true);
+
         // Check for PHP version
         if ( version_compare(PHP_VERSION, $this->min_php_version, '<=') ) {
             exit('PHP Version ' . PHP_VERSION . ' detected. This ExpressionEngine 2.x Boilerplate requires PHP ' . $this->min_php_version . ' or greater.');
         }
 
-        // Set defaults
-        $this->setConfigVars(false, true);
-        $this->setGlobalVars(false, true);
-
+        if ($this->db_config['database']) {
+            # code...
+        }
     }
 
     /**
