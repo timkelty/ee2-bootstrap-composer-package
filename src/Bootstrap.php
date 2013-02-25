@@ -1,4 +1,5 @@
 <?php
+
 namespace Fusionary\ExpressionEngine2\Bootstrap;
 use Symfony\Component\Yaml\Yaml;
 
