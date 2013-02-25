@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-0": {
-            "Fusionary\\ExpressionEngine2\\Bootstrap\\": ""
+            "Fusionary\\ExpressionEngine2\\Bootstrap\\": "src/"
         }
     },
     "target-dir": "Fusionary/ExpressionEngine2/Bootstrap",
