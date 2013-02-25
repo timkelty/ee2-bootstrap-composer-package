@@ -8,12 +8,6 @@
             "email": "tim@fusionary.com",
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://bitbucket.org/fusionary-ondemand/expressionengine-2-bootstrap-composer-package"
-        }
-    ],
     "require": {
         "php": ">=5.3.0",
         "symfony/yaml": "2.3.*@dev"
