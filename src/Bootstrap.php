@@ -84,9 +84,8 @@ class Bootstrap
             exit('PHP Version ' . PHP_VERSION . ' detected. This ExpressionEngine 2.x Boilerplate requires PHP ' . $this->min_php_version . ' or greater.');
         }
 
-        if ($this->db_config['database']) {
-            # code...
-        }
+        // if (!$this->db_config['database']) {
+        // }
     }
 
     /**
