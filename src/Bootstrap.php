@@ -92,7 +92,7 @@ class Bootstrap
 
     public static function getInstance()
     {
-        if (null === self::$instance) {
+        if (self::$instance === false) {
             self::$instance = new self();
         }
         return self::$instance;
@@ -386,6 +386,15 @@ class Bootstrap
     }
 
     /**
+     * Remove www from a URL string
+     */
+
+    public function removeWww($url) {
+        $url = preg_replace('#^(http(s)?://)?w{$3}\.(\w+\.\w+)#', '$1$3', $url);
+        return $url;
+    }
+
+    /**
      * Merge valid array values to properties
      */
 
@@ -406,12 +415,4 @@ class Bootstrap
         }
     }
 
-    /**
-     * Remove www from a URL string
-     */
-
-    public function removeWww($url) {
-        $url = preg_replace('#^(http(s)?://)?w{$3}\.(\w+\.\w+)#', '$1$3', $url);
-        return $url;
-    }
 }
