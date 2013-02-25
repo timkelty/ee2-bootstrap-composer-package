@@ -22,7 +22,7 @@ class Bootstrap
         'db_config'
     );
 
-    public $min_php_version = '5.3.2';
+    public $min_php_version = '5.3.0';
     public $environment     = 'development';
     public $debug           = 0;
     public $global_vars     = array();
