@@ -1,14 +1,14 @@
 <?php
 
-namespace Fusionary\ExpressionEngine2\Bootstrap;
-use Symfony\Component\Yaml\Yaml;
-
 /*
  * Fusionary Bootstrap for ExpressionEngine 2
  *
  * @see https://github.com/focuslabllc/ee-master-config
  * @see http://eeinsider.com/articles/multi-server-setup-for-ee-2/
  */
+
+namespace Fusionary\ExpressionEngine2\Bootstrap;
+use Symfony\Component\Yaml\Yaml;
 
 class Bootstrap
 {
