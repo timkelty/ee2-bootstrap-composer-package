@@ -22,12 +22,11 @@ class Bootstrap
         'db_config'
     );
 
-    public $min_php_version = '5.3.0';
+    public $min_php_version = '5.3.3';
     public $environment     = 'development';
     public $debug           = 0;
     public $global_vars     = array();
-    public $upload_prefs     = array();
-    public $config_vars     = array(
+    public $config_vars = array(
         'upload_preferences' => array()
     );
     public $db_config = array(
@@ -49,9 +48,11 @@ class Bootstrap
     public function __construct()
     {
         global $assign_to_config;
-        $this->global_vars  = isset($assign_to_config['global_vars']) ? $assign_to_config['global_vars'] : $this->global_vars;
-        $this->protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
-        $this->host     = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
+        $this->global_vars    = isset($assign_to_config['global_vars']) ? $assign_to_config['global_vars'] : $this->global_vars;
+        $this->protocol       = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
+        $this->host           = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
+        $this->bootstrap_root = defined("BOOTSTRAP_ROOT") ? BOOTSTRAP_ROOT : $_SERVER['DOCUMENT_ROOT'];
+        $this->bootstrap_root = rtrim($this->bootstrap_root, '/') . '/';
 
         // Base URLs
         // All non-file URLs should have trailing slashes.
@@ -63,11 +64,11 @@ class Bootstrap
 
         // Base paths
         // All paths/dirs should have trailing slashes.
-        $this->system_path           = BOOTSTRAP_ROOT . 'system/';
-        $this->base_path             = BOOTSTRAP_ROOT . $this->public_dir_name . '/';
-        $this->vendor_path           = BOOTSTRAP_ROOT . 'vendor/';
-        $this->config_path           = BOOTSTRAP_ROOT . 'config/';
-        $this->template_path         = BOOTSTRAP_ROOT . 'templates/';
+        $this->system_path           = $this->bootstrap_root . 'system/';
+        $this->base_path             = $this->bootstrap_root . $this->public_dir_name . '/';
+        $this->vendor_path           = $this->bootstrap_root . 'vendor/';
+        $this->config_path           = $this->bootstrap_root . 'config/';
+        $this->template_path         = $this->bootstrap_root . 'templates/';
         $this->ee_path               = $this->system_path . 'expressionengine/';
         $this->uploads_path          = $this->base_path . 'uploads/';
         $this->ee_images_path        = $this->uploads_path . 'members/';
@@ -89,12 +90,11 @@ class Bootstrap
      * Get class instance
      */
 
-    public static function getInstance($create = true)
+    public static function getInstance()
     {
-        if ($create === true && !self::$instance) {
-            self::$instance = new self;
+        if (null === self::$instance) {
+            self::$instance = new self();
         }
-
         return self::$instance;
     }
 
@@ -298,7 +298,7 @@ class Bootstrap
                     $dir = trim($dir, '/');
                     $pattern = '/\/?' . $this->public_dir_name . '\/?/';
                     $dir = array(
-                        'server_path' => BOOTSTRAP_ROOT . $dir . '/',
+                        'server_path' => $this->bootstrap_root . $dir . '/',
                         'url' => '/' . preg_replace($pattern, '', $dir) . '/',
                     );
                 }
@@ -415,4 +415,3 @@ class Bootstrap
         return $url;
     }
 }
-
