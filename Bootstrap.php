@@ -75,17 +75,6 @@ class Bootstrap
         // Set defaults
         $this->setConfigVars(false, true);
         $this->setGlobalVars(false, true);
-
-        // From config files
-        $this->applyConfigFile($this->config_path . 'config.yml');
-        $this->applyConfigFile($this->config_path . 'config.php');
-        $this->applyConfigFile($this->config_path . 'database.yml', 'db_config');
-        $this->applyConfigFile($this->config_path . 'environment.yml');
-        $this->applyConfigFile($this->config_path . 'environment.php');
-
-        // Apply config
-        // $this->setConfigVars(false, false);
-        // $this->setGlobalVars(false, false);
     }
 
     /**
