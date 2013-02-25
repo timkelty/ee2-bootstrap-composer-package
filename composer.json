@@ -16,5 +16,7 @@
         "psr-0": {
             "Fusionary\\ExpressionEngine\\Bootstrap\\": "src/"
         }
-    }
+    },
+    "target-dir": "Fusionary/ExpressionEngine/Bootstrap",
+    "minimum-stability": "dev"
 }
