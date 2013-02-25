@@ -27,6 +27,8 @@ class Bootstrap
     public $debug           = 0;
     public $global_vars     = array();
     public $config_vars = array(
+        'app_version' => 255,
+        'license_number' => '',
         'upload_preferences' => array()
     );
     public $db_config = array(
@@ -206,9 +208,7 @@ class Bootstrap
              */
 
             // ExpressionEngine
-            $this->config_vars['app_version'] = '';
             $this->config_vars['install_lock'] = '';
-            $this->config_vars['license_number'] = '';
             $this->config_vars['doc_url'] = "http://ellislab.com/expressionengine/user-guide/";
             $this->config_vars['site_label'] = '';
 
