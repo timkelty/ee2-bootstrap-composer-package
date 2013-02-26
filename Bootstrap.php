@@ -81,19 +81,11 @@ class Bootstrap
         $this->setConfigVars(false, true);
         $this->setGlobalVars(false, true);
 
-        // Check for PHP version
-        if ( version_compare(PHP_VERSION, $this->min_php_version, '<=') ) {
-            exit('PHP Version ' . PHP_VERSION . ' detected. This ExpressionEngine 2.x Boilerplate requires PHP ' . $this->min_php_version . ' or greater.');
-        }
-
-        // if (!$this->db_config['database']) {
-        // }
     }
 
     /**
      * Get class instance
      */
-
     public static function getInstance()
     {
         if (self::$instance === false) {
@@ -103,9 +95,30 @@ class Bootstrap
     }
 
     /**
+     * Check requirements
+     */
+    public function checkRequirements()
+    {
+
+        // PHP version
+        if (version_compare(PHP_VERSION, $this->min_php_version, '<=')) {
+            exit('PHP Version ' . PHP_VERSION . ' detected. This ExpressionEngine 2.x Boilerplate requires PHP ' . $this->min_php_version . ' or greater.');
+        }
+
+        // Environment
+        if (!$this->environment) {
+            exit('No environment set.');
+        }
+
+        // Check for PHP version
+        if (!$this->db_config['database']) {
+            exit('No database specified.');
+        }
+    }
+
+    /**
      * Set config variables
      */
-
     public function setConfigVars($array = false, $init = false)
     {
         $array = !is_array($array) ? array() : $array;
@@ -293,7 +306,6 @@ class Bootstrap
         /**
          * Upload preferences
          */
-
         if (isset($this->config_vars['upload_preferences'])) {
             foreach ($this->config_vars['upload_preferences'] as $key => &$dir) {
                 if (!is_array($dir)) {
@@ -313,7 +325,6 @@ class Bootstrap
     /**
      * Set database vars
      */
-
     public function setDbVars($vars = array())
     {
         return array_merge(
@@ -326,7 +337,6 @@ class Bootstrap
      * Set global vars
      * Global vars should be prefixed with "gv_".
      */
-
     public function setGlobalVars($array = false, $init = false)
     {
         $array = !is_array($array) ? array() : $array;
@@ -361,7 +371,6 @@ class Bootstrap
     /**
      * Apply config files
      */
-
     public function applyConfigFile($file, $parent_key = false)
     {
         $extension = pathinfo($file, PATHINFO_EXTENSION);
@@ -390,7 +399,6 @@ class Bootstrap
     /**
      * Remove www from a URL string
      */
-
     public function removeWww($url) {
         $url = preg_replace('#^(http(s)?://)?w{$3}\.(\w+\.\w+)#', '$1$3', $url);
         return $url;
@@ -399,7 +407,6 @@ class Bootstrap
     /**
      * Merge valid array values to properties
      */
-
     private function arrayToProps($array, $valid_keys = false, $parent_key = false)
     {
         $valid_keys = ($valid_keys === false) ?  $this->valid_config_keys : $valid_keys;
