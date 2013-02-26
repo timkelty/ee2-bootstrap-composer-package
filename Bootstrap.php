@@ -213,7 +213,7 @@ class Bootstrap
         $this->config_vars['protect_javascript']        = 'y'; # prevents the advanced conditionals parser from processing anything in tags
         $this->config_vars['autosave_interval_seconds'] = '0'; # 0: disables entry autosave
         $this->config_vars['password_lockout']          = 'n';
-        $this->config_vars['cp_theme']                  = 'default';
+        $this->config_vars['cp_theme']                  = 'republic'; # Republic CP
 
         /**
          * Vars pulled from system/expressionengine/config/config.php that we don't usually change
