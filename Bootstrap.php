@@ -111,7 +111,7 @@ class Bootstrap
         }
 
         // Check for PHP version
-        if (!$this->db_config['database']) {
+        if (!isset($this->db_config['database']) || !$this->db_config['database']) {
             exit('No database specified.');
         }
     }
