@@ -27,7 +27,7 @@ class Bootstrap
     public $debug           = 0;
     public $global_vars     = array();
     public $config_vars = array(
-        'app_version' => 255,
+        'app_version' => '255',
         'license_number' => '',
         'upload_preferences' => array()
     );
