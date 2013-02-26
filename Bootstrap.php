@@ -78,8 +78,8 @@ class Bootstrap
         $this->db_config['cachedir'] = $this->system_path . 'cache/db_cache/';
 
         // Set defaults
-        $this->setConfigVars(false, true);
-        $this->setGlobalVars(false, true);
+        $this->setConfigVars(false);
+        $this->setGlobalVars(false);
 
     }
 
@@ -99,209 +99,207 @@ class Bootstrap
      */
     public function checkRequirements()
     {
+        $msgs = array();
 
         // PHP version
         if (version_compare(PHP_VERSION, $this->min_php_version, '<=')) {
-            exit('PHP Version ' . PHP_VERSION . ' detected. This ExpressionEngine 2.x Boilerplate requires PHP ' . $this->min_php_version . ' or greater.');
+            $msgs['php_version'] = 'PHP Version ' . PHP_VERSION . ' detected. This ExpressionEngine 2.x Boilerplate requires PHP ' . $this->min_php_version . ' or greater.';
         }
 
-        // Environment
-        if (!$this->environment) {
-            exit('No environment set.');
-        }
-
-        // Check for PHP version
+        // DB
         if (!isset($this->db_config['database']) || !$this->db_config['database']) {
-            exit('No database specified.');
+            $msgs['no_db'] = 'No database specified. Check your config files.';
+        }
+
+        // Output
+        if (!empty($msgs)) {
+            exit(implode("\n", $msgs));
         }
     }
 
     /**
      * Set config variables
      */
-    public function setConfigVars($array = false, $init = false)
+    public function setConfigVars($array = false)
     {
         $array = !is_array($array) ? array() : $array;
 
-        if ($init === true) {
+        /**
+         * Hidden config vars
+         * @see http://ellislab.com/expressionengine/user-guide/general/hidden_configuration_variables.html
+         */
 
-            /**
-             * Hidden config vars
-             * @see http://ellislab.com/expressionengine/user-guide/general/hidden_configuration_variables.html
-             */
+        // Path/URL settings
+        $this->config_vars['index_page']          = '';
+        $this->config_vars['site_index']          = $this->config_vars['index_page'];
+        $this->config_vars['base_url']            = $this->base_url;
+        $this->config_vars['site_url']            = $this->base_url;
+        $this->config_vars['cp_url']              = $this->base_url . 'cp/index.php';
+        $this->config_vars['theme_folder_path']   = $this->base_path   . 'themes/';
+        $this->config_vars['theme_folder_url']    = $this->base_url    . 'themes/';
+        $this->config_vars['emoticon_path']       = $this->ee_images_url  . 'smileys/';
+        $this->config_vars['emoticon_url']        = $this->ee_images_url  . 'smileys/';
+        $this->config_vars['captcha_path']        = $this->ee_images_path . 'captchas/';
+        $this->config_vars['captcha_url']         = $this->ee_images_url  . 'captchas/';
+        $this->config_vars['avatar_path']         = $this->ee_images_path . 'avatars/';
+        $this->config_vars['avatar_url']          = $this->ee_images_url  . 'avatars/';
+        $this->config_vars['photo_path']          = $this->ee_images_path . 'member_photos/';
+        $this->config_vars['photo_url']           = $this->ee_images_url  . 'member_photos/';
+        $this->config_vars['sig_img_path']        = $this->ee_images_path . 'signature_attachments/';
+        $this->config_vars['sig_img_url']         = $this->ee_images_url  . 'signature_attachments/';
+        $this->config_vars['prv_msg_upload_path'] = $this->ee_images_path . 'pm_attachments/';
+        $this->config_vars['third_party_path']    = $this->vendor_path . 'third_party/';
+        $this->config_vars['tmpl_file_basepath']  = $this->template_path . 'ee_templates/';
 
-            // Path/URL settings
-            $this->config_vars['index_page']          = '';
-            $this->config_vars['site_index']          = $this->config_vars['index_page'];
-            $this->config_vars['base_url']            = $this->base_url;
-            $this->config_vars['site_url']            = $this->base_url;
-            $this->config_vars['cp_url']              = $this->base_url . 'cp/index.php';
-            $this->config_vars['theme_folder_path']   = $this->base_path   . 'themes/';
-            $this->config_vars['theme_folder_url']    = $this->base_url    . 'themes/';
-            $this->config_vars['emoticon_path']       = $this->ee_images_url  . 'smileys/';
-            $this->config_vars['emoticon_url']        = $this->ee_images_url  . 'smileys/';
-            $this->config_vars['captcha_path']        = $this->ee_images_path . 'captchas/';
-            $this->config_vars['captcha_url']         = $this->ee_images_url  . 'captchas/';
-            $this->config_vars['avatar_path']         = $this->ee_images_path . 'avatars/';
-            $this->config_vars['avatar_url']          = $this->ee_images_url  . 'avatars/';
-            $this->config_vars['photo_path']          = $this->ee_images_path . 'member_photos/';
-            $this->config_vars['photo_url']           = $this->ee_images_url  . 'member_photos/';
-            $this->config_vars['sig_img_path']        = $this->ee_images_path . 'signature_attachments/';
-            $this->config_vars['sig_img_url']         = $this->ee_images_url  . 'signature_attachments/';
-            $this->config_vars['prv_msg_upload_path'] = $this->ee_images_path . 'pm_attachments/';
-            $this->config_vars['third_party_path']    = $this->vendor_path . 'third_party/';
-            $this->config_vars['tmpl_file_basepath']  = $this->template_path . 'site_templates/';
+        // Debugging settings
+        $this->config_vars['is_system_on']       = 'y';
+        $this->config_vars['allow_extensions']   = 'y';
+        $this->config_vars['email_debug']        = ($this->debug) ? 'y' : 'n';
+        $this->config_vars['show_profiler']      = (!$this->debug || (isset($_GET['D']) && $_GET['D'] == 'cp')) ? 'n' : 'y';
+        $this->config_vars['template_debugging'] = ($this->debug) ? 'y' : 'n';
+        $this->config_vars['debug']              = ($this->debug) ? '2' : '1'; # 0: no PHP/SQL errors shown. 1: Errors shown to Super Admins. 2: Errors shown to everyone.
 
-            // Debugging settings
-            $this->config_vars['is_system_on']       = 'y';
-            $this->config_vars['allow_extensions']   = 'y';
-            $this->config_vars['email_debug']        = ($this->debug) ? 'y' : 'n';
-            $this->config_vars['show_profiler']      = (!$this->debug || (isset($_GET['D']) && $_GET['D'] == 'cp')) ? 'n' : 'y';
-            $this->config_vars['template_debugging'] = ($this->debug) ? 'y' : 'n';
-            $this->config_vars['debug']              = ($this->debug) ? '2' : '1'; # 0: no PHP/SQL errors shown. 1: Errors shown to Super Admins. 2: Errors shown to everyone.
+        // Tracking & performance
+        $this->config_vars['disable_all_tracking']        = 'y'; # If set to 'y' some of the below settings are disregarded
+        $this->config_vars['enable_sql_caching']          = 'n';
+        $this->config_vars['disable_tag_caching']         = 'n';
+        $this->config_vars['enable_online_user_tracking'] = 'n';
+        $this->config_vars['dynamic_tracking_disabling']  = '500';
+        $this->config_vars['enable_hit_tracking']         = 'n';
+        $this->config_vars['enable_entry_view_tracking']  = 'n';
+        $this->config_vars['log_referrers']               = 'n';
+        $this->config_vars['gzip_output']                 = 'n';
 
-            // Tracking & performance
-            $this->config_vars['disable_all_tracking']        = 'y'; // If set to 'y' some of the below settings are disregarded
-            $this->config_vars['enable_sql_caching']          = 'n';
-            $this->config_vars['disable_tag_caching']         = 'n';
-            $this->config_vars['enable_online_user_tracking'] = 'n';
-            $this->config_vars['dynamic_tracking_disabling']  = '500';
-            $this->config_vars['enable_hit_tracking']         = 'n';
-            $this->config_vars['enable_entry_view_tracking']  = 'n';
-            $this->config_vars['log_referrers']               = 'n';
-            $this->config_vars['gzip_output']                 = 'n';
+        // Cookies & session
+        $this->config_vars['cookie_domain']      =  '.' . $this->removeWww($this->host);
+        $this->config_vars['cookie_path']        =  '';
+        $this->config_vars['user_session_type']  = 'c';
+        $this->config_vars['admin_session_type'] = 'cs';
 
-            // Cookies & session
-            $this->config_vars['cookie_domain']      =  '.' . $this->removeWww($this->host);
-            $this->config_vars['cookie_path']        =  '';
-            $this->config_vars['user_session_type']  = 'c';
-            $this->config_vars['admin_session_type'] = 'cs';
+        // Localization
+        $this->config_vars['daylight_savings']          = ((bool) date('I')) ? 'y' : 'n'; # Auto-detect DST
+        $this->config_vars['server_timezone']           = 'UM5';
+        $this->config_vars['default_site_dst']          = $this->config_vars['daylight_savings'];
+        $this->config_vars['default_site_timezone']     = $this->config_vars['server_timezone'];
+        $this->config_vars['time_format']               = 'us';
+        $this->config_vars['server_offset']             = '';
+        $this->config_vars['allow_member_localization'] = 'n';
 
-            // Localization
-            $this->config_vars['daylight_savings']          = ((bool) date('I')) ? 'y' : 'n'; # Auto-detect DST
-            $this->config_vars['server_timezone']           = 'UM5';
-            $this->config_vars['default_site_dst']          = $this->config_vars['daylight_savings'];
-            $this->config_vars['default_site_timezone']     = $this->config_vars['server_timezone'];
-            $this->config_vars['time_format']               = 'us';
-            $this->config_vars['server_offset']             = '';
-            $this->config_vars['allow_member_localization'] = 'n';
+        // Member settings
+        $this->config_vars['profile_trigger']           = rand(0, time());
+        $this->config_vars['enable_emoticons']          = 'n';
+        $this->config_vars['enable_avatars']            = 'n';
+        $this->config_vars['enable_photos']             = 'n';
+        $this->config_vars['sig_allow_img_upload']      = 'n';
+        $this->config_vars['captcha_require_members']   = 'n';
+        $this->config_vars['allow_member_registration'] = 'n';
 
-            // Member settings
-            $this->config_vars['profile_trigger']           = rand(0, time());
-            $this->config_vars['enable_emoticons']          = 'n';
-            $this->config_vars['enable_avatars']            = 'n';
-            $this->config_vars['enable_photos']             = 'n';
-            $this->config_vars['sig_allow_img_upload']      = 'n';
-            $this->config_vars['captcha_require_members']   = 'n';
-            $this->config_vars['allow_member_registration'] = 'n';
+        // URL/Template settings
+        $this->config_vars['use_category_name']         = 'y';
+        $this->config_vars['reserved_category_word']    = 'category';
+        $this->config_vars['word_separator']            = 'dash'; # dash|underscore
+        $this->config_vars['strict_urls']               = 'y';
+        $this->config_vars['site_404']                  = 'site/404';
+        $this->config_vars['save_tmpl_files']           = 'y';
+        $this->config_vars['hidden_template_indicator'] = '_';
+        $this->config_vars['uri_protocol']              = 'PATH_INFO'; # AUTO|PATH_INFO|QUERY_STRING|REQUEST_URI|ORIG_PATH_INFO
+        $this->config_vars['enable_query_strings']      = TRUE;
+        $this->config_vars['permitted_uri_chars']       = 'a-z 0-9~%.:_\\-';
 
-            // URL/Template settings
-            $this->config_vars['use_category_name']         = 'y';
-            $this->config_vars['reserved_category_word']    = 'category';
-            $this->config_vars['word_separator']            = 'dash'; # dash|underscore
-            $this->config_vars['strict_urls']               = 'y';
-            $this->config_vars['site_404']                  = 'site/404';
-            $this->config_vars['save_tmpl_files']           = 'y';
-            $this->config_vars['hidden_template_indicator'] = '_';
-            $this->config_vars['uri_protocol']              = 'PATH_INFO'; # AUTO|PATH_INFO|QUERY_STRING|REQUEST_URI|ORIG_PATH_INFO
-            $this->config_vars['enable_query_strings']      = TRUE;
-            $this->config_vars['permitted_uri_chars']       = 'a-z 0-9~%.:_\\-';
+        // Other
+        $this->config_vars['encryption_key']            = 'aU807G5kLzw2nwu43n0TC4C0W770z566'; # random 32 characater string
+        $this->config_vars['save_tmpl_revisions']       = 'n';
+        $this->config_vars['new_version_check']         = 'n'; # no slowing my CP homepage down with this
+        $this->config_vars['protect_javascript']        = 'y'; # prevents the advanced conditionals parser from processing anything in tags
+        $this->config_vars['autosave_interval_seconds'] = '0'; # 0: disables entry autosave
+        $this->config_vars['password_lockout']          = 'n';
+        $this->config_vars['cp_theme']                  = 'default';
 
-            // Other
-            $this->config_vars['encryption_key']            = 'aU807G5kLzw2nwu43n0TC4C0W770z566'; # random 32 characater string
-            $this->config_vars['save_tmpl_revisions']       = 'n';
-            $this->config_vars['new_version_check']         = 'n'; # no slowing my CP homepage down with this
-            $this->config_vars['protect_javascript']        = 'y'; # prevents the advanced conditionals parser from processing anything in tags
-            $this->config_vars['autosave_interval_seconds'] = '0'; # 0: disables entry autosave
-            $this->config_vars['password_lockout']          = 'n';
-            $this->config_vars['cp_theme']                  = 'default';
+        /**
+         * Vars pulled from system/expressionengine/config/config.php that we don't usually change
+         */
 
-            /**
-             * Vars pulled from system/expressionengine/config/config.php that we don't usually change
-             */
+        // ExpressionEngine
+        $this->config_vars['install_lock'] = '';
+        $this->config_vars['doc_url'] = "http://ellislab.com/expressionengine/user-guide/";
+        $this->config_vars['site_label'] = '';
 
-            // ExpressionEngine
-            $this->config_vars['install_lock'] = '';
-            $this->config_vars['doc_url'] = "http://ellislab.com/expressionengine/user-guide/";
-            $this->config_vars['site_label'] = '';
+        // CodeIgniter
+        $this->config_vars['url_suffix'] = '';
+        $this->config_vars['language'] = 'english';
+        $this->config_vars['charset'] = 'UTF-8';
+        $this->config_vars['enable_hooks'] = FALSE;
+        $this->config_vars['subclass_prefix'] = 'EE_';
+        $this->config_vars['directory_trigger'] = 'D';
+        $this->config_vars['controller_trigger'] = 'C';
+        $this->config_vars['function_trigger'] = 'M';
+        $this->config_vars['log_threshold'] = 0;
+        $this->config_vars['log_path'] = '';
+        $this->config_vars['log_date_format'] = 'Y-m-d H:i:s';
+        $this->config_vars['cache_path'] = '';
+        $this->config_vars['global_xss_filtering'] = FALSE;
+        $this->config_vars['csrf_protection'] = FALSE;
+        $this->config_vars['compress_output'] = FALSE;
+        $this->config_vars['time_reference'] = 'local';
+        $this->config_vars['rewrite_short_tags'] = TRUE;
+        $this->config_vars['proxy_ips'] = '';
 
-            // CodeIgniter
-            $this->config_vars['url_suffix'] = '';
-            $this->config_vars['language'] = 'english';
-            $this->config_vars['charset'] = 'UTF-8';
-            $this->config_vars['enable_hooks'] = FALSE;
-            $this->config_vars['subclass_prefix'] = 'EE_';
-            $this->config_vars['directory_trigger'] = 'D';
-            $this->config_vars['controller_trigger'] = 'C';
-            $this->config_vars['function_trigger'] = 'M';
-            $this->config_vars['log_threshold'] = 0;
-            $this->config_vars['log_path'] = '';
-            $this->config_vars['log_date_format'] = 'Y-m-d H:i:s';
-            $this->config_vars['cache_path'] = '';
-            $this->config_vars['global_xss_filtering'] = FALSE;
-            $this->config_vars['csrf_protection'] = FALSE;
-            $this->config_vars['compress_output'] = FALSE;
-            $this->config_vars['time_reference'] = 'local';
-            $this->config_vars['rewrite_short_tags'] = TRUE;
-            $this->config_vars['proxy_ips'] = '';
+        /**
+         * Third-party config vars
+         */
 
-            /**
-             * Third-party config vars
-             */
+        // CE Image
+        $this->config_vars['ce_image_document_root']     = $this->base_path;
+        $this->config_vars['ce_image_cache_dir']         = '/cache/made/';
+        $this->config_vars['ce_image_remote_dir']        = '/cache/remote/';
+        $this->config_vars['ce_image_memory_limit']      = 64;
+        $this->config_vars['ce_image_remote_cache_time'] = 1440;
+        $this->config_vars['ce_image_quality']           = 90;
+        $this->config_vars['ce_image_disable_xss_check'] = 'no';
 
-            // CE Image
-            $this->config_vars['ce_image_document_root']     = $this->base_path;
-            $this->config_vars['ce_image_cache_dir']         = '/cache/made/';
-            $this->config_vars['ce_image_remote_dir']        = '/cache/remote/';
-            $this->config_vars['ce_image_memory_limit']      = 64;
-            $this->config_vars['ce_image_remote_cache_time'] = 1440;
-            $this->config_vars['ce_image_quality']           = 90;
-            $this->config_vars['ce_image_disable_xss_check'] = 'no';
+        // Playa
+        $this->config_vars['playa_site_index'] = $this->base_url;
 
-            // Playa
-            $this->config_vars['playa_site_index'] = $this->base_url;
+        // Minimee
+        $this->config_vars['minimee_cache_path']  = $this->public_cache_path;
+        $this->config_vars['minimee_cache_url']   = $this->public_cache_url;
+        $this->config_vars['minimee_base_path']   = $this->base_path;
+        $this->config_vars['minimee_base_url']    = $this->base_url;
+        $this->config_vars['minimee_debug']       = 'n';
+        $this->config_vars['minimee_disable']     = 'n';
+        $this->config_vars['minimee_remote_mode'] = 'auto'; # auto/curl/fgc
+        $this->config_vars['minimee_minify_html'] = 'yes';
 
-            // Minimee
-            $this->config_vars['minimee_cache_path']  = $this->public_cache_path;
-            $this->config_vars['minimee_cache_url']   = $this->public_cache_url;
-            $this->config_vars['minimee_base_path']   = $this->base_path;
-            $this->config_vars['minimee_base_url']    = $this->base_url;
-            $this->config_vars['minimee_debug']       = 'n';
-            $this->config_vars['minimee_disable']     = 'n';
-            $this->config_vars['minimee_remote_mode'] = 'auto'; # auto/curl/fgc
-            $this->config_vars['minimee_minify_html'] = 'yes';
+        // Assets
+        $this->config_vars['assets_site_url'] = '/index.php';
+        $this->config_vars['assets_cp_path']  = $this->system_path;
 
-            // Assets
-            $this->config_vars['assets_site_url'] = '/index.php';
-            $this->config_vars['assets_cp_path']  = $this->system_path;
+        // Low Variables
+        $this->config_vars['low_variables_save_as_files'] = 'y';
+        $this->config_vars['low_variables_file_path']     = $this->template_path . 'low_variables/';
 
-            // Low Variables
-            $this->config_vars['low_variables_save_as_files'] = 'y';
-            $this->config_vars['low_variables_file_path']     = $this->template_path . 'low_variables/';
+        // Stash
+        $this->config_vars['stash_file_basepath'] = $this->template_path . 'stash_templates/';
+        $this->config_vars['stash_file_sync'] = ($this->environment == 'production') ? false : true;
 
-            // Stash
-            $this->config_vars['stash_file_basepath'] = $this->template_path . 'stash_templates/';
-            $this->config_vars['stash_file_sync'] = ($this->environment == 'production') ? false : true;
+        /**
+         * Custom config vars
+         */
 
-            /**
-             * Custom config vars
-             */
-
-            $this->config_vars['google_analytics_id']    = ($this->environment == 'production') ? 'UA-XXXXXXX-XX' : '';
-            $this->config_vars['cookie_expire_days']     = 30; # in days
-            $this->config_vars['cookie_expire_from_now'] = time() + (60 * 60 * 24 * $this->config_vars['cookie_expire_days']); # now +x days
-            $this->config_vars['global_json'] = array(
-                'env'               => $this->environment,
-                'salt'              => $this->config_vars['encryption_key'],
-                'googleAnalyticsId' => $this->config_vars['google_analytics_id'],
-                'cookieSettings' => array(
-                    'path'    => $this->config_vars['cookie_path'],
-                    'domain'  => $this->config_vars['cookie_domain'],
-                    'expires' => $this->config_vars['cookie_expire_days'],
-                ),
-                'html' => array(),
-            );
-        }
+        $this->config_vars['google_analytics_id']    = ($this->environment == 'production') ? 'UA-XXXXXXX-XX' : '';
+        $this->config_vars['cookie_expire_days']     = 30; # in days
+        $this->config_vars['cookie_expire_from_now'] = time() + (60 * 60 * 24 * $this->config_vars['cookie_expire_days']); # now +x days
+        $this->config_vars['global_json'] = array(
+            'env'               => $this->environment,
+            'salt'              => $this->config_vars['encryption_key'],
+            'googleAnalyticsId' => $this->config_vars['google_analytics_id'],
+            'cookieSettings' => array(
+                'path'    => $this->config_vars['cookie_path'],
+                'domain'  => $this->config_vars['cookie_domain'],
+                'expires' => $this->config_vars['cookie_expire_days'],
+            ),
+            'html' => array(),
+        );
 
         /**
          * Upload preferences
@@ -319,53 +317,52 @@ class Bootstrap
             }
         }
 
-        return array_merge($this->config_vars, $array);
-    }
-
-    /**
-     * Set database vars
-     */
-    public function setDbVars($vars = array())
-    {
-        return array_merge(
-            $this->db_config,
-            $vars
-        );
+        $this->config_vars =  array_merge($this->config_vars, $array);
+        return $this->config_vars;
     }
 
     /**
      * Set global vars
      * Global vars should be prefixed with "gv_".
      */
-    public function setGlobalVars($array = false, $init = false)
+    public function setDbVars($array = array())
     {
         $array = !is_array($array) ? array() : $array;
+        $this->db_config =  array_merge($this->db_config, $array);
+        return $this->db_config;
+    }
 
-        if ($init === true) {
+    /**
+     * Set global vars
+     * Global vars should be prefixed with "gv_".
+     */
+    public function setGlobalVars($array = array())
+    {
+       $array = !is_array($array) ? array() : $array;
 
-            // Shortcuts
-            $this->global_vars['gv_date_fmt']       = '%F %j, %Y';
-            $this->global_vars['gv_date_fmt_time']  = '%g:%i %a';
-            $this->global_vars['gv_date_fmt_full']  = '%F %j %Y, %g:%i %a';
+        // Shortcuts
+        $this->global_vars['gv_date_fmt']      = '%F %j, %Y';
+        $this->global_vars['gv_date_fmt_time'] = '%g:%i %a';
+        $this->global_vars['gv_date_fmt_full'] = '%F %j %Y, %g:%i %a';
 
-            // Param shortcuts
-            $this->global_vars['gv_param_no_limit']                 = 'limit="9999999999"';
-            $this->global_vars['gv_param_structure_nav_defaults']   = 'show_depth="1" max_depth="1" current_class="active" css_id="none" channel:title="page:cf_page_title"';
-            $this->global_vars['gv_param_low_title_entry_defaults'] = 'entry_id="{entry_id}" fallback="yes" custom_field="cf_{channel_short_name}_title"';
-            $this->global_vars['gv_param_ce_img_defaults']          = 'fallback_src="/assets/styles/images/other/placeholder.png" allow_scale_larger="yes" crop="yes"';
+        // Param shortcuts
+        $this->global_vars['gv_param_no_limit']                 = 'limit="9999999999"';
+        $this->global_vars['gv_param_structure_nav_defaults']   = 'show_depth="1" max_depth="1" current_class="active" css_id="none" channel:title="page:cf_page_title"';
+        $this->global_vars['gv_param_low_title_entry_defaults'] = 'entry_id="{entry_id}" fallback="yes" custom_field="cf_{channel_short_name}_title"';
+        $this->global_vars['gv_param_ce_img_defaults']          = 'fallback_src="/assets/styles/images/other/placeholder.png" allow_scale_larger="yes" crop="yes"';
 
-            // Environment
-            $this->global_vars['gv_env'] = $this->environment;
+        // Environment
+        $this->global_vars['gv_env'] = $this->environment;
 
-            // Paths/URLs
-            $this->global_vars['gv_path_vendor'] = $this->vendor_path;
-            $this->global_vars['gv_base_url'] = $this->base_url; # because site_url is late parsed
+        // Paths/URLs
+        $this->global_vars['gv_path_vendor'] = $this->vendor_path;
+        $this->global_vars['gv_base_url']    = $this->base_url; # because site_url is late parsed
 
-            // Other
-            $this->global_vars['gv_salt'] = $this->config_vars['encryption_key'];
-        }
+        // Other
+        $this->global_vars['gv_salt'] = $this->config_vars['encryption_key'];
 
-        return array_merge($this->global_vars, $array);
+        $this->global_vars =  array_merge($this->global_vars, $array);
+        return $this->global_vars;
     }
 
     /**
