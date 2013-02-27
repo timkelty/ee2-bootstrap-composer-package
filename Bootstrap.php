@@ -22,10 +22,12 @@ class Bootstrap
         'db_config'
     );
 
-    public $min_php_version = '5.3.3';
-    public $environment     = 'development';
-    public $debug           = 0;
-    public $global_vars     = array();
+    public $min_php_version     = '5.3.3';
+    public $environment         = 'development';
+    public $debug               = 0;
+    public $public_dir_name     = 'public';
+    public $home_template_group = 'home';
+    public $global_vars         = array();
     public $config_vars = array(
         'app_version' => '255',
         'license_number' => '',
@@ -62,7 +64,6 @@ class Bootstrap
         $this->uploads_url      = $this->base_url . 'uploads/';
         $this->ee_images_url    = $this->uploads_url . 'members/';
         $this->public_cache_url = $this->base_url . 'cache/';
-        $this->public_dir_name  = 'public';
 
         // Base paths
         // All paths/dirs should have trailing slashes.
@@ -199,7 +200,7 @@ class Bootstrap
         $this->config_vars['reserved_category_word']    = 'category';
         $this->config_vars['word_separator']            = 'dash'; # dash|underscore
         $this->config_vars['strict_urls']               = 'y';
-        $this->config_vars['site_404']                  = 'site/404';
+        $this->config_vars['site_404']                  = $this->home_template_group . '/404';
         $this->config_vars['save_tmpl_files']           = 'y';
         $this->config_vars['hidden_template_indicator'] = '_';
         $this->config_vars['uri_protocol']              = 'PATH_INFO'; # AUTO|PATH_INFO|QUERY_STRING|REQUEST_URI|ORIG_PATH_INFO
@@ -420,5 +421,4 @@ class Bootstrap
             }
         }
     }
-
 }
