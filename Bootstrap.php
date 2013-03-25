@@ -9,6 +9,7 @@
 
 namespace Fusionary\ExpressionEngine2\Bootstrap;
 use Symfony\Component\Yaml\Yaml;
+use Fusionary\UtilityBelt;
 
 class Bootstrap
 {
@@ -225,7 +226,7 @@ class Bootstrap
         $defaults['config_vars']['gzip_output']                 = 'n';
 
         // Cookies & session
-        $defaults['config_vars']['cookie_domain']      = '.' . $this->removeWww($this->host);
+        $defaults['config_vars']['cookie_domain']      = '.' . UtilityBelt::removeWww($this->host);
         $defaults['config_vars']['cookie_path']        = '';
         $defaults['config_vars']['user_session_type']  = 'c';
         $defaults['config_vars']['admin_session_type'] = 'cs';
