@@ -25,6 +25,7 @@ class Bootstrap
     public $min_php_version        = '5.3.14';
     public $default_template_group = 'home';
     public $global_var_prefix      = 'gv_';
+    public $replace_key_prefix     = '!';
     public $defaults               = array();
     public $db_config              = array();
     public $global_vars            = array();
@@ -40,7 +41,7 @@ class Bootstrap
         ),
     );
 
-    public function __construct()
+    public function __construct($app_root = null)
     {
         // PHP version
         if (version_compare(PHP_VERSION, $this->min_php_version, '<')) {
@@ -55,17 +56,17 @@ class Bootstrap
         if(!isset($assign_to_config['global_vars'])) {
             $assign_to_config['global_vars'] = array();
         }
-        $this->global_vars = $this->mergeRecursively($assign_to_config['global_vars'], $this->global_vars);
+        $this->global_vars = $this->merge($assign_to_config['global_vars'], $this->global_vars);
         $assign_to_config['global_vars'] =& $this->global_vars;
 
         // Base Vars
-        $this->environment               = getenv('APP_ENV') ?: 'development';
-        $this->protocol                  = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
-        $this->host                      = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
+        $this->environment = getenv('APP_ENV') ?: 'development';
+        $this->protocol    = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
+        $this->host        = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
 
         // Base paths & URLs
         // All paths/dirs and non-file URLs should have trailing slashes.
-        $this->app_root          = defined("APP_ROOT") ? APP_ROOT : $_SERVER['DOCUMENT_ROOT'];
+        $this->app_root          = ($app_root !== null) ? $app_root : $_SERVER['DOCUMENT_ROOT'];
         $this->app_root          = rtrim($this->app_root, '/') . '/';
         $this->system_path       = $this->app_root . 'system/';
         $this->vendor_path       = $this->app_root . 'vendor/';
@@ -98,10 +99,10 @@ class Bootstrap
      * Get class instance
      * @return obj Class instance
      */
-    public static function getInstance()
+    public static function getInstance($app_root = null)
     {
         if (self::$instance === false) {
-            self::$instance = new self();
+            self::$instance = new self($app_root);
         }
 
         return self::$instance;
@@ -428,7 +429,7 @@ class Bootstrap
         foreach ($array as $key => $value) {
             if (in_array($key, $valid_keys) && $value !== null) {
                 if (isset($this->$key) && is_array($this->$key) && is_array($value)) {
-                    $this->$key = $keep_existing ? $this->mergeRecursively($value, $this->$key) : $this->mergeRecursively($this->$key, $value);
+                    $this->$key = $keep_existing ? $this->merge($value, $this->$key) : $this->merge($this->$key, $value);
                 } else {
                     $this->$key = $keep_existing && isset($this->$key) ? $this->key : $value;
                 }
@@ -438,6 +439,7 @@ class Bootstrap
 
     /**
      * Version of array_merge_recursive without overwriting numeric keys
+     * Keys that begin with replace_key_prefix will be replaced, not merged.
      *
      * @param  array $array1 Initial array to merge.
      * @param  array ...     Variable list of arrays to recursively merge.
@@ -445,16 +447,27 @@ class Bootstrap
      * @link   http://www.php.net/manual/en/function.array-merge-recursive.php#106985
      * @author Martyniuk Vasyl <martyniuk.vasyl@gmail.com>
      */
-    private function mergeRecursively()
+    private function merge()
     {
         $arrays = func_get_args();
         $base = array_shift($arrays);
+        $replace_key_prefix = $this->replace_key_prefix;
 
         foreach($arrays as $array) {
             reset($base);
             while(list($key, $value) = @each($array)) {
-                if(is_array($value) && @is_array($base[$key])) {
-                    $base[$key] = $this->mergeRecursively($base[$key], $value);
+
+                // Replace keys that start with replace_key_prefix, not merge
+                $key_arr = str_split($key);
+                $replace = array_shift($key_arr) == $replace_key_prefix;
+                if ($replace_key_prefix !== false) {
+                    if ($replace) {
+                        $key = implode('', $key_arr);
+                    }
+                }
+
+                if(!$replace && is_array($value) && @is_array($base[$key])) {
+                    $base[$key] = $this->merge($base[$key], $value);
                 }
                 else {
                     $base[$key] = $value;
