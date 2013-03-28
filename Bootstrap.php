@@ -9,7 +9,6 @@
 
 namespace Fusionary\ExpressionEngine2\Bootstrap;
 use Symfony\Component\Yaml\Yaml;
-use Fusionary\UtilityBelt\UtilityBelt;
 
 class Bootstrap
 {
