@@ -84,14 +84,14 @@ class Bootstrap
         // Config var defaults
         // We set in the constructor so we can reference them later.
         // This allows us to override one var and change many.
-        $this->config_vars = array(
+        $this->config_vars = array_merge($this->config_vars, array(
             'server_timezone'           => $this->getTimeZoneCode(),
             'daylight_savings'          => ((bool) date('I')) ? 'y' : 'n',
             'cookie_domain'             => '.' . $this->removeWww($this->host),
             'google_analytics_id'       => ($this->environment == 'production') ? 'UA-XXXXXXX-XX' : '',
             'encryption_key'            => base64_encode(str_rot13($this->app_name)),
-            'expiration'                => time() + (60 * 60 * 24 * $this->config_vars['cookie_expiration_in_days'])
-        );
+            'cookie_expiration'         => time() + (60 * 60 * 24 * $this->config_vars['cookie_expiration_in_days'])
+        ));
     }
 
     /**
