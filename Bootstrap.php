@@ -26,6 +26,7 @@ class Bootstrap
     public $default_template_group = 'home';
     public $global_var_prefix      = 'gv_';
     public $replace_key_prefix     = '!';
+    public $root_relative_dirs     = true;
     public $defaults               = array();
     public $db_config              = array();
     public $global_vars            = array();
@@ -122,7 +123,6 @@ class Bootstrap
                     $this->db_config['hostname'] = $this->db_config['host'];
                     unset($this->db_config['host']);
                 }
-
                 break;
             case 'config_vars':
 
@@ -133,9 +133,17 @@ class Bootstrap
                         $dir = trim($dir, '/');
                         $dir = array(
                             'server_path' => $this->base_path . $dir . '/',
-                            'url' => $dir . '/',
+                            'url' => $dir,
                         );
                     }
+
+                    // Prefix with site url or root-relative slash and ensure trailing slash
+                    $prefix = $this->root_relative_dirs ? '/' : $this->base_url;
+                    $dir['url'] = trim($dir['url'], '/');
+                    if (!parse_url($dir['url'], PHP_URL_SCHEME)) {
+                        $dir['url'] = $prefix . $dir['url'];
+                    }
+                    $dir['url'] = $dir['url'] . '/';
                 }
                 break;
             case 'global_vars':
@@ -150,7 +158,7 @@ class Bootstrap
             case 'defaults':
                 $this->defaults = array(
                     'db_config'   => array(
-                        'password' => 'password', # Setting this ensures EE's DB error is shown
+                        'password' => 'password', # Setting this ensures EE's DB error is shown if no database is set
                         'dbdriver' => 'mysql',
                         'pconnect' => false,
                         'dbprefix' => 'exp_',
