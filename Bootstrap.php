@@ -17,7 +17,6 @@ class Bootstrap
         'db_config',
         'config_vars',
         'global_vars',
-
     );
 
     public $app_name               = 'ExpressionEngine 2 Boilerplate';
