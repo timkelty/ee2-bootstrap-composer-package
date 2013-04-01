@@ -17,6 +17,5 @@
             "Fusionary\\ExpressionEngine2\\Bootstrap\\": ""
         }
     },
-    "target-dir": "Fusionary/ExpressionEngine2/Bootstrap",
-    "minimum-stability": "dev"
+    "target-dir": "Fusionary/ExpressionEngine2/Bootstrap"
 }

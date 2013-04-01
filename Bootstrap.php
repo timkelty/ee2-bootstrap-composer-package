@@ -22,7 +22,7 @@ class Bootstrap
     public $app_name               = 'ExpressionEngine 2 Boilerplate';
     public $system_path            = './system/';
     public $debug                  = 0;
-    public $min_php_version        = '5.3.14';
+    public $min_php_version        = '5.3.3';
     public $default_template_group = 'home';
     public $global_var_prefix      = 'gv_';
     public $replace_key_prefix     = '!';
