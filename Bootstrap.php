@@ -87,12 +87,13 @@ class Bootstrap
         // We set in the constructor so we can reference them later.
         // This allows us to override one var and change many.
         $this->config_vars = array_merge($this->config_vars, array(
-            'server_timezone'           => $this->getTimeZoneCode(),
-            'daylight_savings'          => ((bool) date('I')) ? 'y' : 'n',
-            'cookie_domain'             => '.' . $this->removeWww($this->host),
-            'google_analytics_id'       => ($this->environment == 'production') ? 'UA-XXXXXXX-XX' : '',
-            'encryption_key'            => base64_encode(str_rot13($this->app_name)),
-            'cookie_expiration'         => time() + (60 * 60 * 24 * $this->config_vars['cookie_expiration_in_days'])
+            'server_timezone'        => $this->getTimeZoneCode(),
+            'daylight_savings'       => ((bool) date('I')) ? 'y' : 'n',
+            'cookie_domain'          => '.' . $this->removeWww($this->host),
+            'google_analytics_id'    => ($this->environment == 'production') ? 'UA-XXXXXXX-XX' : '',
+            'encryption_key'         => base64_encode(str_rot13($this->app_name)),
+            'cookie_expiration'      => time() + (60 * 60 * 24 * $this->config_vars['cookie_expiration_in_days']),
+            'reserved_category_word' => 'category',
         ));
     }
 
@@ -245,7 +246,7 @@ class Bootstrap
 
                         // URL/Template settings
                         'use_category_name'         => 'y',
-                        'reserved_category_word'    => 'category',
+                        'reserved_category_word'    => $this->config_vars['reserved_category_word'],
                         'word_separator'            => 'dash', # dash|underscore
                         'strict_urls'               => 'y',
                         'site_404'                  => $this->default_template_group . '/404',
@@ -345,10 +346,11 @@ class Bootstrap
                         ),
                     ),
                     'global_vars' => array(
-                        'base_url'      => $this->base_url, # because site_url is parsed late
-                        'date_fmt'      => '%F %j, %Y',
-                        'date_fmt_time' => '%g:%i %a',
-                        'date_fmt_full' => '%F %j %Y, %g:%i %a',
+                        'base_url'               => $this->base_url, # because site_url is parsed late
+                        'reserved_category_word' => $this->config_vars['reserved_category_word'],
+                        'date_fmt'               => '%F %j, %Y',
+                        'date_fmt_time'          => '%g:%i %a',
+                        'date_fmt_full'          => '%F %j %Y, %g:%i %a',
                     ),
                 );
                 break;
