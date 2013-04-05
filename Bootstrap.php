@@ -319,7 +319,7 @@ class Bootstrap
     {
         $this->set(array(
             'config_vars' => array(
-                'root_path'                 => $this->createPath(realpath($_SERVER['DOCUMENT_ROOT'] . '/..')),
+                'project_path'              => $this->createPath(realpath($_SERVER['DOCUMENT_ROOT'] . '/..')),
                 'protocol'                  => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://',
                 'host'                      => isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'],
                 'debug'                     => 0,
@@ -346,11 +346,11 @@ class Bootstrap
 
         $this->set(array(
             'config_vars' => array(
-                'system_path'       => $this->config_vars['root_path'] . 'system/',
-                'vendor_path'       => $this->config_vars['root_path'] . 'vendor/',
-                'config_path'       => $this->config_vars['root_path'] . 'config/',
-                'template_path'     => $this->config_vars['root_path'] . 'templates/',
-                'base_path'         => $this->config_vars['root_path'] . 'public/',
+                'system_path'       => $this->config_vars['project_path'] . 'system/',
+                'vendor_path'       => $this->config_vars['project_path'] . 'vendor/',
+                'config_path'       => $this->config_vars['project_path'] . 'config/',
+                'template_path'     => $this->config_vars['project_path'] . 'templates/',
+                'base_path'         => $this->config_vars['project_path'] . 'public/',
                 'base_url'          => $this->config_vars['protocol'] . $this->config_vars['host'] . '/',
                 'encryption_key'    => base64_encode(str_rot13($this->config_vars['site_label'])),
                 'cookie_expiration' => time() + (60 * 60 * 24 * $this->config_vars['cookie_expiration_in_days']),
