@@ -346,10 +346,9 @@ class Bootstrap
 
         $this->set(array(
             'config_vars' => array(
-                'system_path'       => $this->config_vars['project_path'] . 'system/',
                 'vendor_path'       => $this->config_vars['project_path'] . 'vendor/',
-                'config_path'       => $this->config_vars['project_path'] . 'config/',
-                'template_path'     => $this->config_vars['project_path'] . 'templates/',
+                'config_path'       => $this->config_vars['project_path'] . 'app/config/',
+                'template_path'     => $this->config_vars['project_path'] . 'app/templates/',
                 'base_path'         => $this->config_vars['project_path'] . 'public/',
                 'base_url'          => $this->config_vars['protocol'] . $this->config_vars['host'] . '/',
                 'encryption_key'    => base64_encode(str_rot13($this->config_vars['site_label'])),
@@ -360,9 +359,9 @@ class Bootstrap
 
         $this->set(array(
             'config_vars' => array(
+                'system_path'       => $this->config_vars['vendor_path'] . 'ee_system/',
                 'uploads_path'      => $this->config_vars['base_path'] . 'uploads/',
                 'uploads_url'       => $this->config_vars['base_url'] . 'uploads/',
-                'ee_cache_path'     => $this->config_vars['system_path'] . 'cache/',
                 'public_cache_path' => $this->config_vars['base_path'] . 'cache/',
                 'public_cache_url'  => $this->config_vars['base_url'] . 'cache/',
             ),
@@ -370,6 +369,7 @@ class Bootstrap
 
         $this->set(array(
             'config_vars' => array(
+                'ee_cache_path'     => $this->config_vars['system_path'] . 'cache/',
                 'ee_images_path' => $this->config_vars['uploads_path'] . 'members/',
                 'ee_images_url'  => $this->config_vars['uploads_url'] . 'members/',
             ),
@@ -409,7 +409,7 @@ class Bootstrap
                 'sig_img_url'         => $this->config_vars['ee_images_url']  . 'signature_attachments/',
                 'prv_msg_upload_path' => $this->config_vars['ee_images_path'] . 'pm_attachments/',
                 'prv_msg_upload_url'  => $this->config_vars['ee_images_url'] . 'pm_attachments/',
-                'third_party_path'    => $this->config_vars['vendor_path'] . 'third_party/',
+                'third_party_path'    => $this->config_vars['vendor_path'] . 'ee_third_party/',
                 'tmpl_file_basepath'  => $this->config_vars['template_path'] . 'ee_templates/',
 
                 // Debugging settings
