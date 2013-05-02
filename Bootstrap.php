@@ -333,7 +333,7 @@ class Bootstrap
                 'site_label'                => 'ExpressionEngine 2 Boilerplate',
                 'cookie_expiration_in_days' => 30,
                 'min_php_version'           => '5.3.3',
-                'app_version'               => '255',
+                'app_version'               => '260',
                 'license_number'            => '',
                 'google_analytics_id'       => 'UA-XXXXXXX-XX',
                 'upload_preferences'        => array(),
