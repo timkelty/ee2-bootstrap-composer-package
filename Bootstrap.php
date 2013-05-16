@@ -326,7 +326,7 @@ class Bootstrap
                 'index_page'                => '',
                 'server_timezone'           => $this->getTimeZoneCode(),
                 'daylight_savings'          => ((bool) date('I')) ? 'y' : 'n',
-                'default_template_group'    => 'home',
+                'default_template_group'    => 'pages',
                 'global_var_prefix'         => 'gv_',
                 'reserved_category_word'    => 'category',
                 'root_relative_dirs'        => true,
@@ -346,9 +346,9 @@ class Bootstrap
 
         $this->set(array(
             'config_vars' => array(
+                'app_path'          => $this->config_vars['project_path'] . 'app/',
                 'vendor_path'       => $this->config_vars['project_path'] . 'vendor/',
-                'config_path'       => $this->config_vars['project_path'] . 'app/config/',
-                'template_path'     => $this->config_vars['project_path'] . 'app/templates/',
+                'config_path'       => $this->config_vars['project_path'] . 'config/',
                 'base_path'         => $this->config_vars['project_path'] . 'public/',
                 'base_url'          => $this->config_vars['protocol'] . $this->config_vars['host'] . '/',
                 'encryption_key'    => base64_encode(str_rot13($this->config_vars['site_label'])),
@@ -410,7 +410,7 @@ class Bootstrap
                 'prv_msg_upload_path' => $this->config_vars['ee_images_path'] . 'pm_attachments/',
                 'prv_msg_upload_url'  => $this->config_vars['ee_images_url'] . 'pm_attachments/',
                 'third_party_path'    => $this->config_vars['vendor_path'] . 'ee_third_party/',
-                'tmpl_file_basepath'  => $this->config_vars['template_path'] . 'ee_templates/',
+                'tmpl_file_basepath'  => $this->config_vars['app_path'] . 'ee_templates/',
 
                 // Debugging settings
                 'is_system_on'       => 'y',
@@ -521,7 +521,7 @@ class Bootstrap
 
                 // Low Variables
                 'low_variables_save_as_files' => 'y',
-                'low_variables_file_path'     => $this->config_vars['template_path'] . 'low_variables/',
+                'low_variables_file_path'     => $this->config_vars['app_path'] . 'low_variables/',
 
                 // Stash
                 'stash_file_basepath' => $this->config_vars['template_path'] . 'stash_templates/',
