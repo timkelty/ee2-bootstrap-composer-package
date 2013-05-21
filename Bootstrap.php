@@ -524,7 +524,7 @@ class Bootstrap
                 'low_variables_file_path'     => $this->config_vars['app_path'] . 'low_variables/',
 
                 // Stash
-                'stash_file_basepath' => $this->config_vars['template_path'] . 'stash_templates/',
+                'stash_file_basepath' => $this->config_vars['app_path'] . 'stash_templates/',
                 'stash_file_sync'     => ($this->environment == 'production') ? false : true,
 
                 // Custom
