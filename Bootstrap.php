@@ -329,6 +329,7 @@ class Bootstrap
                 'default_template_group'    => 'pages',
                 'global_var_prefix'         => 'gv_',
                 'reserved_category_word'    => 'category',
+                'uploads_dir_name'          => 'uploads',
                 'root_relative_dirs'        => true,
                 'site_label'                => 'ExpressionEngine 2 Boilerplate',
                 'cookie_expiration_in_days' => 30,
@@ -360,8 +361,8 @@ class Bootstrap
         $this->set(array(
             'config_vars' => array(
                 'system_path'       => $this->config_vars['vendor_path'] . 'ee_system/',
-                'uploads_path'      => $this->config_vars['base_path'] . 'uploads/',
-                'uploads_url'       => $this->config_vars['base_url'] . 'uploads/',
+                'uploads_path'      => $this->config_vars['base_path'] . $this->config_vars['uploads_dir_name'] . '/',
+                'uploads_url'       => $this->config_vars['base_url'] . $this->config_vars['uploads_dir_name'] . '/',
                 'public_cache_path' => $this->config_vars['base_path'] . 'cache/',
                 'public_cache_url'  => $this->config_vars['base_url'] . 'cache/',
             ),
