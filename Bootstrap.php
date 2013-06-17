@@ -81,6 +81,10 @@ class Bootstrap
             $dir['url'] = $dir['url'] . '/';
         }
 
+
+        // Normalize to string to avoid version error
+        $this->config_vars['app_version'] = (string) $this->config_vars['app_version'];
+
         return $this->config_vars;
     }
 
