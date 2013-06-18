@@ -364,7 +364,7 @@ class Bootstrap
 
         $this->set(array(
             'config_vars' => array(
-                'system_path'       => $this->config_vars['vendor_path'] . 'ee_system/',
+                'system_path'       => $this->config_vars['vendor_path'] . 'ee/system/',
                 'uploads_path'      => $this->config_vars['base_path'] . $this->config_vars['upload_dir_name'] . '/',
                 'uploads_url'       => $this->config_vars['base_url'] . $this->config_vars['upload_dir_name'] . '/',
                 'public_cache_path' => $this->config_vars['base_path'] . 'cache/',
@@ -414,7 +414,7 @@ class Bootstrap
                 'sig_img_url'         => $this->config_vars['ee_images_url']  . 'signature_attachments/',
                 'prv_msg_upload_path' => $this->config_vars['ee_images_path'] . 'pm_attachments/',
                 'prv_msg_upload_url'  => $this->config_vars['ee_images_url'] . 'pm_attachments/',
-                'third_party_path'    => $this->config_vars['vendor_path'] . 'ee_third_party/',
+                'third_party_path'    => $this->config_vars['vendor_path'] . 'ee/third_party/',
                 'tmpl_file_basepath'  => $this->config_vars['app_path'] . 'ee_templates/',
 
                 // Debugging settings
