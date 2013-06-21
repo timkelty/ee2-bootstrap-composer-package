@@ -13,13 +13,13 @@ use Symfony\Component\Yaml\Yaml;
 class Bootstrap
 {
     private static $instance = false;
-    private $allowed_keys    = array('db_config', 'config_vars', 'global_vars');
+    private $allowed_keys    = array('database_config', 'config', 'global_vars');
 
     // Other public properties are set in setDefaults
-    public $environment        = 'development';
-    public $config_vars        = array('upload_preferences' => array());
-    public $db_config          = array();
-    public $global_vars        = array();
+    public $environment = 'development';
+    public $config      = array('upload_preferences' => array());
+    public $database    = array();
+    public $global_vars = array();
 
     public function __construct()
     {
@@ -51,29 +51,29 @@ class Bootstrap
     public function getDbConfig()
     {
         // Rails/Capistrano database.yml compatibility
-        if (isset($this->db_config['host'])) {
-            $this->db_config['hostname'] = $this->db_config['host'];
-            unset($this->db_config['host']);
+        if (isset($this->database_config['host'])) {
+            $this->database_config['hostname'] = $this->database_config['host'];
+            unset($this->database_config['host']);
         }
 
-        return $this->db_config;
+        return $this->database_config;
     }
 
-    public function getConfigVars()
+    public function getConfig()
     {
         // Upload preferences
         // If not an array, we assume path and url relative to base_path
-        foreach ($this->config_vars['upload_preferences'] as $key => &$dir) {
+        foreach ($this->config['upload_preferences'] as $key => &$dir) {
             if (!is_array($dir)) {
                 $dir = array(
-                    'server_path' => $this->config_vars['base_path'] . $dir,
+                    'server_path' => $this->config['base_path'] . $dir,
                     'url' => $dir,
                 );
             }
             $dir['server_path'] = $this->createPath($dir['server_path']);
 
             // Prefix with site url or root-relative slash and ensure trailing slash
-            $prefix = $this->config_vars['root_relative_dirs'] ? '/' : $this->config_vars['base_url'];
+            $prefix = $this->config['root_relative_dirs'] ? '/' : $this->config['base_url'];
             $dir['url'] = trim($dir['url'], '/');
             if (!parse_url($dir['url'], PHP_URL_SCHEME)) {
                 $dir['url'] = $prefix . $dir['url'];
@@ -83,18 +83,18 @@ class Bootstrap
 
 
         // Normalize to string to avoid version error
-        $this->config_vars['app_version'] = (string) $this->config_vars['app_version'];
+        $this->config['app_version'] = (string) $this->config['app_version'];
 
-        return $this->config_vars;
+        return $this->config;
     }
 
     public function getGlobalVars()
     {
-        if (isset($this->config_vars['global_var_prefix'])) {
+        if (isset($this->config['global_var_prefix'])) {
             $keys = array_keys($this->global_vars);
             foreach ($keys as &$key) {
-                if (strpos($key, $this->config_vars['global_var_prefix']) !== 0) {
-                    $key = $this->config_vars['global_var_prefix'] . $key;
+                if (strpos($key, $this->config['global_var_prefix']) !== 0) {
+                    $key = $this->config['global_var_prefix'] . $key;
                 }
             }
             $this->global_vars = array_combine($keys, $this->global_vars);
@@ -292,8 +292,8 @@ class Bootstrap
         }
 
         // Trim off the base path off
-        if ($remove_base_path && isset($this->config_vars['base_path'])) {
-            $pattern = '@^' . preg_quote($this->config_vars['base_path'], '/') . '@';
+        if ($remove_base_path && isset($this->config['base_path'])) {
+            $pattern = '@^' . preg_quote($this->config['base_path'], '/') . '@';
             $path = preg_replace($pattern, '', $path);
             $path = '/' . ltrim($path, '/');
         }
@@ -322,7 +322,7 @@ class Bootstrap
     private function setDefaults()
     {
         $this->set(array(
-            'config_vars' => array(
+            'config' => array(
                 'project_path'              => $this->createPath(realpath($_SERVER['DOCUMENT_ROOT'] . '/..')),
                 'protocol'                  => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://',
                 'host'                      => isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'],
@@ -350,38 +350,38 @@ class Bootstrap
         ), false);
 
         $this->set(array(
-            'config_vars' => array(
-                'app_path'          => $this->config_vars['project_path'] . 'app/',
-                'vendor_path'       => $this->config_vars['project_path'] . 'vendor/',
-                'config_path'       => $this->config_vars['project_path'] . 'config/',
-                'base_path'         => $this->config_vars['project_path'] . 'public/',
-                'base_url'          => $this->config_vars['protocol'] . $this->config_vars['host'] . '/',
-                'encryption_key'    => base64_encode(str_rot13($this->config_vars['site_label'])),
-                'cookie_expiration' => time() + (60 * 60 * 24 * $this->config_vars['cookie_expiration_in_days']),
-                'cookie_domain'     => '.' . $this->removeWww($this->config_vars['host']),
+            'config' => array(
+                'app_path'          => $this->config['project_path'] . 'app/',
+                'vendor_path'       => $this->config['project_path'] . 'vendor/',
+                'config_path'       => $this->config['project_path'] . 'config/',
+                'base_path'         => $this->config['project_path'] . 'public/',
+                'base_url'          => $this->config['protocol'] . $this->config['host'] . '/',
+                'encryption_key'    => base64_encode(str_rot13($this->config['site_label'])),
+                'cookie_expiration' => time() + (60 * 60 * 24 * $this->config['cookie_expiration_in_days']),
+                'cookie_domain'     => '.' . $this->removeWww($this->config['host']),
             ),
         ), false);
 
         $this->set(array(
-            'config_vars' => array(
-                'system_path'       => $this->config_vars['vendor_path'] . 'ee/system/',
-                'uploads_path'      => $this->config_vars['base_path'] . $this->config_vars['upload_dir_name'] . '/',
-                'uploads_url'       => $this->config_vars['base_url'] . $this->config_vars['upload_dir_name'] . '/',
-                'public_cache_path' => $this->config_vars['base_path'] . 'cache/',
-                'public_cache_url'  => $this->config_vars['base_url'] . 'cache/',
+            'config' => array(
+                'system_path'       => $this->config['vendor_path'] . 'ee/system/',
+                'uploads_path'      => $this->config['base_path'] . $this->config['upload_dir_name'] . '/',
+                'uploads_url'       => $this->config['base_url'] . $this->config['upload_dir_name'] . '/',
+                'public_cache_path' => $this->config['base_path'] . 'cache/',
+                'public_cache_url'  => $this->config['base_url'] . 'cache/',
             ),
         ), false);
 
         $this->set(array(
-            'config_vars' => array(
-                'ee_cache_path'     => $this->config_vars['system_path'] . 'cache/',
-                'ee_images_path' => $this->config_vars['uploads_path'] . 'members/',
-                'ee_images_url'  => $this->config_vars['uploads_url'] . 'members/',
+            'config' => array(
+                'ee_cache_path'     => $this->config['system_path'] . 'cache/',
+                'ee_images_path' => $this->config['uploads_path'] . 'members/',
+                'ee_images_url'  => $this->config['uploads_url'] . 'members/',
             ),
         ), false);
 
         $this->set(array(
-            'db_config'   => array(
+            'database_config'   => array(
                 'password' => 'password', # Setting this ensures EE's DB error is shown if no database is set
                 'dbdriver' => 'mysql',
                 'pconnect' => false,
@@ -392,38 +392,38 @@ class Bootstrap
                 'autoinit' => false,
                 'char_set' => 'utf8',
                 'dbcollat' => 'utf8_general_ci',
-                'cachedir' => $this->config_vars['ee_cache_path'] . 'db_cache/',
+                'cachedir' => $this->config['ee_cache_path'] . 'db_cache/',
             ),
-            'config_vars' => array(
+            'config' => array(
 
                 // Path/URL settings
-                'site_index'          => $this->config_vars['index_page'],
-                'site_url'            => $this->config_vars['base_url'],
-                'cp_url'              => $this->config_vars['base_url'] . 'cp/index.php',
-                'theme_folder_path'   => $this->config_vars['base_path']   . 'themes/',
-                'theme_folder_url'    => $this->config_vars['base_url']    . 'themes/',
-                'emoticon_path'       => $this->config_vars['ee_images_path']  . 'smileys/',
-                'emoticon_url'        => $this->config_vars['ee_images_url']  . 'smileys/',
-                'captcha_path'        => $this->config_vars['ee_images_path'] . 'captchas/',
-                'captcha_url'         => $this->config_vars['ee_images_url']  . 'captchas/',
-                'avatar_path'         => $this->config_vars['ee_images_path'] . 'avatars/',
-                'avatar_url'          => $this->config_vars['ee_images_url']  . 'avatars/',
-                'photo_path'          => $this->config_vars['ee_images_path'] . 'member_photos/',
-                'photo_url'           => $this->config_vars['ee_images_url']  . 'member_photos/',
-                'sig_img_path'        => $this->config_vars['ee_images_path'] . 'signature_attachments/',
-                'sig_img_url'         => $this->config_vars['ee_images_url']  . 'signature_attachments/',
-                'prv_msg_upload_path' => $this->config_vars['ee_images_path'] . 'pm_attachments/',
-                'prv_msg_upload_url'  => $this->config_vars['ee_images_url'] . 'pm_attachments/',
-                'third_party_path'    => $this->config_vars['vendor_path'] . 'ee/third_party/',
-                'tmpl_file_basepath'  => $this->config_vars['app_path'] . 'ee_templates/',
+                'site_index'          => $this->config['index_page'],
+                'site_url'            => $this->config['base_url'],
+                'cp_url'              => $this->config['base_url'] . 'cp/index.php',
+                'theme_folder_path'   => $this->config['base_path']   . 'themes/',
+                'theme_folder_url'    => $this->config['base_url']    . 'themes/',
+                'emoticon_path'       => $this->config['ee_images_path']  . 'smileys/',
+                'emoticon_url'        => $this->config['ee_images_url']  . 'smileys/',
+                'captcha_path'        => $this->config['ee_images_path'] . 'captchas/',
+                'captcha_url'         => $this->config['ee_images_url']  . 'captchas/',
+                'avatar_path'         => $this->config['ee_images_path'] . 'avatars/',
+                'avatar_url'          => $this->config['ee_images_url']  . 'avatars/',
+                'photo_path'          => $this->config['ee_images_path'] . 'member_photos/',
+                'photo_url'           => $this->config['ee_images_url']  . 'member_photos/',
+                'sig_img_path'        => $this->config['ee_images_path'] . 'signature_attachments/',
+                'sig_img_url'         => $this->config['ee_images_url']  . 'signature_attachments/',
+                'prv_msg_upload_path' => $this->config['ee_images_path'] . 'pm_attachments/',
+                'prv_msg_upload_url'  => $this->config['ee_images_url'] . 'pm_attachments/',
+                'third_party_path'    => $this->config['vendor_path'] . 'ee/third_party/',
+                'tmpl_file_basepath'  => $this->config['app_path'] . 'ee_templates/',
 
                 // Debugging settings
                 'is_system_on'       => 'y',
                 'allow_extensions'   => 'y',
-                'email_debug'        => ($this->config_vars['debug']) ? 'y' : 'n',
-                'show_profiler'      => (!$this->config_vars['debug'] || (isset($_GET['D']) && $_GET['D'] == 'cp')) ? 'n' : 'y',
-                'template_debugging' => ($this->config_vars['debug']) ? 'y' : 'n',
-                'debug'              => ($this->config_vars['debug']) ? '2' : '1', # 0: no PHP/SQL errors shown. 1: Errors shown to Super Admins. 2: Errors shown to everyone.
+                'email_debug'        => ($this->config['debug']) ? 'y' : 'n',
+                'show_profiler'      => (!$this->config['debug'] || (isset($_GET['D']) && $_GET['D'] == 'cp')) ? 'n' : 'y',
+                'template_debugging' => ($this->config['debug']) ? 'y' : 'n',
+                'debug'              => ($this->config['debug']) ? '2' : '1', # 0: no PHP/SQL errors shown. 1: Errors shown to Super Admins. 2: Errors shown to everyone.
 
                 // Tracking & performance
                 'disable_all_tracking'        => 'y', # If set to 'y' some of the below settings are disregarded
@@ -442,8 +442,8 @@ class Bootstrap
                 'admin_session_type' => 'cs',
 
                 // Localization
-                'default_site_dst'          => $this->config_vars['daylight_savings'],
-                'default_site_timezone'     => $this->config_vars['server_timezone'],
+                'default_site_dst'          => $this->config['daylight_savings'],
+                'default_site_timezone'     => $this->config['server_timezone'],
                 'time_format'               => 'us',
                 'server_offset'             => '',
                 'allow_member_localization' => 'n',
@@ -461,7 +461,7 @@ class Bootstrap
                 'use_category_name'         => 'y',
                 'word_separator'            => 'dash', # dash|underscore
                 'strict_urls'               => 'y',
-                'site_404'                  => $this->config_vars['default_template_group'] . '/404',
+                'site_404'                  => $this->config['default_template_group'] . '/404',
                 'save_tmpl_files'           => 'y',
                 'hidden_template_indicator' => '_',
                 'uri_protocol'              => 'AUTO', # AUTO|PATH_INFO|QUERY_STRING|REQUEST_URI|ORIG_PATH_INFO
@@ -499,22 +499,22 @@ class Bootstrap
                 'proxy_ips'            => '',
 
                 // CE Image
-                'ce_image_document_root'     => $this->config_vars['base_path'],
-                'ce_image_cache_dir'         => $this->createPath($this->config_vars['public_cache_path'] . 'made/', true),
-                'ce_image_remote_dir'        => $this->createPath($this->config_vars['public_cache_path'] . 'remote/', true),
+                'ce_image_document_root'     => $this->config['base_path'],
+                'ce_image_cache_dir'         => $this->createPath($this->config['public_cache_path'] . 'made/', true),
+                'ce_image_remote_dir'        => $this->createPath($this->config['public_cache_path'] . 'remote/', true),
                 'ce_image_memory_limit'      => 64,
                 'ce_image_remote_cache_time' => 1440,
                 'ce_image_quality'           => 90,
                 'ce_image_disable_xss_check' => 'no',
 
                 // Playa
-                'playa_site_index' => $this->config_vars['base_url'],
+                'playa_site_index' => $this->config['base_url'],
 
                 // Minimee
-                'minimee_cache_path'  => $this->config_vars['public_cache_path'],
-                'minimee_cache_url'   => $this->config_vars['public_cache_url'],
-                'minimee_base_path'   => $this->config_vars['base_path'],
-                'minimee_base_url'    => $this->config_vars['base_url'],
+                'minimee_cache_path'  => $this->config['public_cache_path'],
+                'minimee_cache_url'   => $this->config['public_cache_url'],
+                'minimee_base_path'   => $this->config['base_path'],
+                'minimee_base_url'    => $this->config['base_url'],
                 'minimee_debug'       => 'n',
                 'minimee_disable'     => 'n',
                 'minimee_remote_mode' => 'auto', # auto/curl/fgc
@@ -522,32 +522,32 @@ class Bootstrap
 
                 // Assets
                 'assets_site_url' => '/index.php',
-                'assets_cp_path'  => $this->config_vars['system_path'],
+                'assets_cp_path'  => $this->config['system_path'],
 
                 // Low Variables
                 'low_variables_save_as_files' => 'y',
-                'low_variables_file_path'     => $this->config_vars['app_path'] . 'low_variables/',
+                'low_variables_file_path'     => $this->config['app_path'] . 'low_variables/',
 
                 // Stash
-                'stash_file_basepath' => $this->config_vars['app_path'] . 'stash_templates/',
+                'stash_file_basepath' => $this->config['app_path'] . 'stash_templates/',
                 'stash_file_sync'     => ($this->environment == 'production') ? false : true,
 
                 // Custom
                 'json'               => array(
                     'environment'       => $this->environment,
-                    'encryptionKey'     => $this->config_vars['encryption_key'],
-                    'googleAnalyticsId' => $this->config_vars['google_analytics_id'],
-                    'lang'              => $this->camelCaseKeys($this->config_vars['lang']),
+                    'encryptionKey'     => $this->config['encryption_key'],
+                    'googleAnalyticsId' => $this->config['google_analytics_id'],
+                    'lang'              => $this->camelCaseKeys($this->config['lang']),
                     'cookieSettings'    => array(
-                        'domain'           => $this->config_vars['cookie_domain'],
-                        'expirationInDays' => $this->config_vars['cookie_expiration_in_days'],
-                        'expiration'       => $this->config_vars['cookie_expiration'],
+                        'domain'           => $this->config['cookie_domain'],
+                        'expirationInDays' => $this->config['cookie_expiration_in_days'],
+                        'expiration'       => $this->config['cookie_expiration'],
                     ),
                 ),
             ),
             'global_vars'   => array(
-                'base_url'               => $this->config_vars['base_url'], # because site_url is parsed late
-                'reserved_category_word' => $this->config_vars['reserved_category_word'],
+                'base_url'               => $this->config['base_url'], # because site_url is parsed late
+                'reserved_category_word' => $this->config['reserved_category_word'],
                 'date_fmt'               => '%F %j, %Y',
                 'date_fmt_time'          => '%g:%i %a',
                 'date_fmt_full'          => '%F %j %Y, %g:%i %a',
