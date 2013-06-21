@@ -48,7 +48,7 @@ class Bootstrap
         return self::$instance;
     }
 
-    public function getDbConfig()
+    public function getDatabaseConfig()
     {
         // Rails/Capistrano database.yml compatibility
         if (isset($this->database_config['host'])) {
