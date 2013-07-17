@@ -415,7 +415,7 @@ class Bootstrap
                 'prv_msg_upload_path' => $this->config['ee_images_path'] . 'pm_attachments/',
                 'prv_msg_upload_url'  => $this->config['ee_images_url'] . 'pm_attachments/',
                 'third_party_path'    => $this->config['vendor_path'] . 'ee/third_party/',
-                'tmpl_file_basepath'  => $this->config['app_path'] . 'ee_templates/',
+                'tmpl_file_basepath'  => $this->config['app_path'] . 'templates/',
 
                 // Debugging settings
                 'is_system_on'       => 'y',
