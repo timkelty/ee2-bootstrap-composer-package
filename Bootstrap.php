@@ -81,9 +81,9 @@ class Bootstrap
             $dir['url'] = $dir['url'] . '/';
         }
 
-
         // Normalize to string to avoid version error
         $this->config['app_version'] = (string) $this->config['app_version'];
+        $this->config['debug'] = (string) $this->config['debug'];
 
         return $this->config;
     }
@@ -326,7 +326,7 @@ class Bootstrap
                 'project_path'              => $this->createPath(realpath($_SERVER['DOCUMENT_ROOT'] . '/..')),
                 'protocol'                  => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://',
                 'host'                      => isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'],
-                'debug'                     => 0,
+                'debug'                     => 1,
                 'index_page'                => '',
                 'server_timezone'           => $this->getTimeZoneCode(),
                 'daylight_savings'          => ((bool) date('I')) ? 'y' : 'n',
@@ -511,14 +511,12 @@ class Bootstrap
                 'playa_site_index' => $this->config['base_url'],
 
                 // Minimee
-                'minimee_cache_path'  => $this->config['public_cache_path'],
-                'minimee_cache_url'   => $this->config['public_cache_url'],
-                'minimee_base_path'   => $this->config['base_path'],
-                'minimee_base_url'    => $this->config['base_url'],
-                'minimee_debug'       => 'n',
-                'minimee_disable'     => 'n',
-                'minimee_remote_mode' => 'auto', # auto/curl/fgc
-                'minimee_minify_html' => 'yes',
+                'minimee' => array(
+                    'cache_path'  => $this->config['public_cache_path'],
+                    'cache_url'   => $this->config['public_cache_url'],
+                    'minify_html' => 'yes',
+                    'disable'     => ($this->environment == 'production') ? 'no' : 'yes',
+                ),
 
                 // Assets
                 'assets_site_url' => '/index.php',
@@ -546,6 +544,7 @@ class Bootstrap
                 ),
             ),
             'global_vars'   => array(
+                'environment'            => $this->environment,
                 'base_url'               => $this->config['base_url'], # because site_url is parsed late
                 'reserved_category_word' => $this->config['reserved_category_word'],
                 'date_fmt'               => '%F %j, %Y',
