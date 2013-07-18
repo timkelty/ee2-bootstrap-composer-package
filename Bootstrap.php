@@ -464,7 +464,7 @@ class Bootstrap
                 'site_404'                  => $this->config['default_template_group'] . '/404',
                 'save_tmpl_files'           => 'y',
                 'hidden_template_indicator' => '_',
-                'uri_protocol'              => 'AUTO', # AUTO|PATH_INFO|QUERY_STRING|REQUEST_URI|ORIG_PATH_INFO
+                'uri_protocol'              => 'PATH_INFO', # AUTO|PATH_INFO|QUERY_STRING|REQUEST_URI|ORIG_PATH_INFO
                 'enable_query_strings'      => TRUE,
                 'permitted_uri_chars'       => 'a-z 0-9~%.:_\\-',
 
