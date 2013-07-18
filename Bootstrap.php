@@ -14,6 +14,7 @@ class Bootstrap
 {
     private static $instance = false;
     private $allowed_keys    = array('database_config', 'config', 'global_vars');
+    private $is_production;
 
     // Other public properties are set in setDefaults
     public $environment = 'development';
@@ -26,6 +27,9 @@ class Bootstrap
         if (getenv('APP_ENV')) {
             $this->environment = getenv('APP_ENV');
         }
+
+        // We do lots of things (minifying, etc) based on this
+        $this->is_production = $this->environment == 'production';
 
         // Set this by reference so it changes with our property
         global $assign_to_config;
@@ -326,7 +330,7 @@ class Bootstrap
                 'project_path'              => $this->createPath(realpath($_SERVER['DOCUMENT_ROOT'] . '/..')),
                 'protocol'                  => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://',
                 'host'                      => isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'],
-                'debug'                     => 1,
+                'debug'                     => 0, # 0: no PHP/SQL errors shown. 1: Errors shown to Super Admins. 2: Errors shown to everyone.
                 'index_page'                => '',
                 'server_timezone'           => $this->getTimeZoneCode(),
                 'daylight_savings'          => ((bool) date('I')) ? 'y' : 'n',
@@ -423,7 +427,6 @@ class Bootstrap
                 'email_debug'        => ($this->config['debug']) ? 'y' : 'n',
                 'show_profiler'      => (!$this->config['debug'] || (isset($_GET['D']) && $_GET['D'] == 'cp')) ? 'n' : 'y',
                 'template_debugging' => ($this->config['debug']) ? 'y' : 'n',
-                'debug'              => ($this->config['debug']) ? '2' : '1', # 0: no PHP/SQL errors shown. 1: Errors shown to Super Admins. 2: Errors shown to everyone.
 
                 // Tracking & performance
                 'disable_all_tracking'        => 'y', # If set to 'y' some of the below settings are disregarded
@@ -515,7 +518,7 @@ class Bootstrap
                     'cache_path'  => $this->config['public_cache_path'],
                     'cache_url'   => $this->config['public_cache_url'],
                     'minify_html' => 'yes',
-                    'disable'     => ($this->environment == 'production') ? 'no' : 'yes',
+                    'disable'     => $this->is_production ? 'no' : 'yes',
                 ),
 
                 // Assets
@@ -528,7 +531,7 @@ class Bootstrap
 
                 // Stash
                 'stash_file_basepath' => $this->config['app_path'] . 'stash_templates/',
-                'stash_file_sync'     => ($this->environment == 'production') ? false : true,
+                'stash_file_sync'     => $this->is_production,
 
                 // Custom
                 'json'               => array(
@@ -544,7 +547,6 @@ class Bootstrap
                 ),
             ),
             'global_vars'   => array(
-                'environment'            => $this->environment,
                 'base_url'               => $this->config['base_url'], # because site_url is parsed late
                 'reserved_category_word' => $this->config['reserved_category_word'],
                 'date_fmt'               => '%F %j, %Y',
