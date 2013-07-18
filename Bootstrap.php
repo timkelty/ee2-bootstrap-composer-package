@@ -439,7 +439,7 @@ class Bootstrap
                 // Cookies & session
                 'cookie_path'        => '',
                 'user_session_type'  => 'c',
-                'admin_session_type' => 'cs',
+                'admin_session_type' => 'c',
 
                 // Localization
                 'default_site_dst'          => $this->config['daylight_savings'],
