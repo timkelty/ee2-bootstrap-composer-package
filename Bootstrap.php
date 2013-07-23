@@ -337,7 +337,7 @@ class Bootstrap
                 'default_template_group'    => 'pages',
                 'global_var_prefix'         => 'gv_',
                 'reserved_category_word'    => 'category',
-                'upload_dir_name'           => 'uploads',
+                'upload_dir_name'           => 'storage',
                 'root_relative_dirs'        => true,
                 'site_label'                => 'ExpressionEngine 2 Boilerplate',
                 'cookie_expiration_in_days' => 30,
@@ -368,19 +368,19 @@ class Bootstrap
 
         $this->set(array(
             'config' => array(
-                'system_path'       => $this->config['vendor_path'] . 'ee/system/',
-                'uploads_path'      => $this->config['base_path'] . $this->config['upload_dir_name'] . '/',
-                'uploads_url'       => $this->config['base_url'] . $this->config['upload_dir_name'] . '/',
-                'public_cache_path' => $this->config['base_path'] . 'cache/',
-                'public_cache_url'  => $this->config['base_url'] . 'cache/',
+                'system_path'         => $this->config['vendor_path'] . 'ee/system/',
+                'public_storage_path' => $this->config['base_path'] . $this->config['upload_dir_name'] . '/',
+                'public_storage_url'  => $this->config['base_url'] . $this->config['upload_dir_name'] . '/',
             ),
         ), false);
 
         $this->set(array(
             'config' => array(
                 'ee_cache_path'     => $this->config['system_path'] . 'cache/',
-                'ee_images_path' => $this->config['uploads_path'] . 'members/',
-                'ee_images_url'  => $this->config['uploads_url'] . 'members/',
+                'public_cache_path' => $this->config['public_storage_path'] . 'cache/',
+                'public_cache_url'  => $this->config['public_storage_url'] . 'cache/',
+                'ee_images_path'    => $this->config['public_storage_path'] . 'members/',
+                'ee_images_url'     => $this->config['public_storage_url'] . 'members/',
             ),
         ), false);
 
