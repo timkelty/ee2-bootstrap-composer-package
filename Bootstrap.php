@@ -14,7 +14,6 @@ class Bootstrap
 {
     private static $instance = false;
     private $allowed_keys    = array('database_config', 'config', 'global_vars');
-    private $is_production;
 
     // Other public properties are set in setDefaults
     public $environment = 'development';
@@ -27,9 +26,6 @@ class Bootstrap
         if (getenv('APP_ENV')) {
             $this->environment = getenv('APP_ENV');
         }
-
-        // We do lots of things (minifying, etc) based on this
-        $this->is_production = $this->environment == 'production';
 
         // Set this by reference so it changes with our property
         global $assign_to_config;
@@ -327,6 +323,7 @@ class Bootstrap
     {
         $this->set(array(
             'config' => array(
+                'production_mode'           => $this->environment == 'production',
                 'project_path'              => $this->createPath(realpath($_SERVER['DOCUMENT_ROOT'] . '/..')),
                 'protocol'                  => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://',
                 'host'                      => isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'],
@@ -518,7 +515,7 @@ class Bootstrap
                     'cache_path'  => $this->config['public_cache_path'],
                     'cache_url'   => $this->config['public_cache_url'],
                     'minify_html' => 'yes',
-                    'disable'     => $this->is_production ? 'no' : 'yes',
+                    'disable'     => $this->config['production_mode'] ? 'no' : 'yes',
                 ),
 
                 // Assets
@@ -531,7 +528,7 @@ class Bootstrap
 
                 // Stash
                 'stash_file_basepath' => $this->config['app_path'] . 'stash_templates/',
-                'stash_file_sync'     => $this->is_production,
+                'stash_file_sync'     => !$this->config['production_mode'],
 
                 // Custom
                 'json'               => array(
