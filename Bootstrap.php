@@ -171,10 +171,10 @@ class Bootstrap
         switch ($file_parts['extension']) {
             case 'yml':
             case 'yaml':
-                $vars = Yaml::parse($file) ?: $vars;
+                $vars = Yaml::parse($file);
                 break;
             case 'ini':
-                $vars = parse_ini_file($file, true) ?: $vars;
+                $vars = parse_ini_file($file, true);
                 break;
             case 'json':
                 $json = file_get_contents($file);
@@ -193,7 +193,7 @@ class Bootstrap
         }
 
         // Only return environmental vars
-        return isset($vars[$this->environment]) ? $vars[$this->environment] : array();
+        return isset($vars) && isset($vars[$this->environment]) ? $vars[$this->environment] : array();
     }
 
     /**
