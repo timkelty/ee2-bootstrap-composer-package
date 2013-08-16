@@ -10,7 +10,7 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "symfony/yaml": "2.2.*@dev"
+        "symfony/yaml": "2.4.*@dev"
     },
     "autoload": {
         "psr-0": {
@@ -20,7 +20,7 @@
     "target-dir": "Fusionary/ExpressionEngine2/Bootstrap",
     "extra": {
         "branch-alias": {
-            "dev-master": "1.3.*-dev"
+            "dev-master": "1.*.*-dev"
         }
     }
 }
