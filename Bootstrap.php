@@ -465,7 +465,7 @@ class Bootstrap
                 // URL/Template settings
                 'use_category_name'         => 'y',
                 'word_separator'            => 'dash', # dash|underscore
-                'strict_urls'               => 'y',
+                'strict_urls'               => 'n',
                 'site_404'                  => $this->config['default_template_group'] . '/404',
                 'save_tmpl_files'           => 'y',
                 'hidden_template_indicator' => '_',
