@@ -538,6 +538,8 @@ class Bootstrap
 
             ),
             'global_vars' => array(
+                'environment'            => $this->environment,
+                'development_mode'       => $this->config['development_mode'],
                 'base_url'               => $this->config['base_url'], # because site_url is parsed late
                 'reserved_category_word' => $this->config['reserved_category_word'],
                 'date_fmt'               => '%F %j, %Y',
