@@ -542,6 +542,7 @@ class Bootstrap
                 'development_mode'       => $this->config['development_mode'],
                 'base_url'               => $this->config['base_url'], # because site_url is parsed late
                 'reserved_category_word' => $this->config['reserved_category_word'],
+                'default_template_group' => $this->config['default_template_group'],
                 'date_fmt'               => '%F %j, %Y',
                 'date_fmt_time'          => '%g:%i %a',
                 'date_fmt_full'          => '%F %j %Y, %g:%i %a',
