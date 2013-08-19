@@ -1,7 +1,7 @@
 {
     "name": "fusionary/ee2-bootstrap",
     "description": "Config bootstrap for ExpressionEngine 2.x",
-    "homepage": "https://bitbucket.org/fusionary-ondemand/expressionengine-2-bootstrap-composer-package/",
+    "homepage": "https://bitbucket.org/fusionary/ee2-bootstrap-composer-package",
     "authors": [
         {
             "name": "Tim Kelty",
