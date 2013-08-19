@@ -521,7 +521,7 @@ class Bootstrap
 
                 // Minimee
                 'minimee' => array(
-                    'base_path'  => $this->config['base_path'],
+                    'base_path'   => $this->config['base_path'],
                     'cache_path'  => $this->config['public_cache_path'],
                     'cache_url'   => $this->config['public_cache_url'],
                     'minify_html' => 'yes',
