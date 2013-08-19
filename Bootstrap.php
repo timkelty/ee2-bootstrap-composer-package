@@ -168,6 +168,7 @@ class Bootstrap
             return array();
         }
         $file_parts = pathinfo($file);
+        $vars = array();
         switch ($file_parts['extension']) {
             case 'yml':
             case 'yaml':
@@ -192,8 +193,11 @@ class Bootstrap
                 break;
         }
 
-        // Only return environmental vars
-        return isset($vars) && isset($vars[$this->environment]) ? $vars[$this->environment] : array();
+        // Merge environmental vars into defaults
+        $env_vars = isset($vars[$this->environment]) ? $vars[$this->environment] : array();
+        $vars = array_intersect_key($vars, array_flip($this->allowed_keys));
+
+        return $this->merge($vars, $env_vars);
     }
 
     /**
