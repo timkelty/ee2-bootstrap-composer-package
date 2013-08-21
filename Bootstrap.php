@@ -332,7 +332,7 @@ class Bootstrap
     {
         $this->set(array(
             'config' => array(
-                'development_mode'          => false,
+                'production_mode'           => ($this->environment == 'production') ? true : false,
                 'project_path'              => $this->createPath(realpath($_SERVER['DOCUMENT_ROOT'] . '/..')),
                 'protocol'                  => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://',
                 'host'                      => isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'],
@@ -350,7 +350,6 @@ class Bootstrap
                 'min_php_version'           => '5.3.3',
                 'app_version'               => '261',
                 'license_number'            => '',
-                'google_analytics_id'       => 'UA-XXXXXXX-XX',
                 'upload_preferences'        => array(),
                 'lang'                      => array(
                     'no_results' => 'No results found.',
@@ -525,7 +524,7 @@ class Bootstrap
                     'cache_path'  => $this->config['public_cache_path'],
                     'cache_url'   => $this->config['public_cache_url'],
                     'minify_html' => 'yes',
-                    'disable'     => $this->config['development_mode'] ? 'yes' : 'no',
+                    'disable'     => $this->config['production_mode'] ? 'no' : 'yes',
                 ),
 
                 // Assets
@@ -538,12 +537,12 @@ class Bootstrap
 
                 // Stash
                 'stash_file_basepath' => $this->config['app_path'] . 'stash_templates/',
-                'stash_file_sync'     => $this->config['development_mode'],
+                'stash_file_sync'     => !$this->config['production_mode'],
 
             ),
             'global_vars' => array(
                 'environment'            => $this->environment,
-                'development_mode'       => $this->config['development_mode'],
+                'production_mode'        => $this->config['production_mode'],
                 'base_url'               => $this->config['base_url'], # because site_url is parsed late
                 'reserved_category_word' => $this->config['reserved_category_word'],
                 'default_template_group' => $this->config['default_template_group'],
@@ -552,9 +551,8 @@ class Bootstrap
                 'date_fmt_full'          => '%F %j %Y, %g:%i %a',
                 'json'                   => array(
                     'environment'       => $this->environment,
-                    'developmentMode'   => $this->config['development_mode'],
+                    'productionMode'   => $this->config['production_mode'],
                     'encryptionKey'     => $this->config['encryption_key'],
-                    'googleAnalyticsId' => $this->config['google_analytics_id'],
                     'lang'              => $this->camelCaseKeys($this->config['lang']),
                     'cookieSettings'    => array(
                         'domain'           => $this->config['cookie_domain'],
