@@ -332,11 +332,11 @@ class Bootstrap
     {
         $this->set(array(
             'config' => array(
-                'production_mode'           => ($this->environment == 'production') ? true : false,
+                'production_mode'           => $this->environment == 'production',
                 'project_path'              => $this->createPath(realpath($_SERVER['DOCUMENT_ROOT'] . '/..')),
                 'protocol'                  => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://',
                 'host'                      => isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'],
-                'debug'                     => 0, # 0: no PHP/SQL errors shown. 1: Errors shown to Super Admins. 2: Errors shown to everyone.
+                'debug'                     => 1, # 0: no PHP/SQL errors shown. 1: Errors shown to Super Admins. 2: Errors shown to everyone.
                 'index_page'                => '',
                 'server_timezone'           => $this->getTimeZoneCode(),
                 'daylight_savings'          => ((bool) date('I')) ? 'y' : 'n',
@@ -368,6 +368,7 @@ class Bootstrap
                 'encryption_key'    => base64_encode(str_rot13($this->config['site_name'])),
                 'cookie_expiration' => time() + (60 * 60 * 24 * $this->config['cookie_expiration_in_days']),
                 'cookie_domain'     => '.' . $this->removeWww($this->config['host']),
+                'allow_indexing'    => $this->config['production_mode'],
             ),
         ), false);
 
@@ -543,6 +544,7 @@ class Bootstrap
             'global_vars' => array(
                 'environment'            => $this->environment,
                 'production_mode'        => $this->config['production_mode'],
+                'allow_indexing'         => $this->config['allow_indexing'],
                 'base_url'               => $this->config['base_url'], # because site_url is parsed late
                 'reserved_category_word' => $this->config['reserved_category_word'],
                 'default_template_group' => $this->config['default_template_group'],
@@ -550,11 +552,11 @@ class Bootstrap
                 'date_fmt_time'          => '%g:%i %a',
                 'date_fmt_full'          => '%F %j %Y, %g:%i %a',
                 'json'                   => array(
-                    'environment'       => $this->environment,
-                    'productionMode'   => $this->config['production_mode'],
-                    'encryptionKey'     => $this->config['encryption_key'],
-                    'lang'              => $this->camelCaseKeys($this->config['lang']),
-                    'cookieSettings'    => array(
+                    'environment'    => $this->environment,
+                    'productionMode' => $this->config['production_mode'],
+                    'encryptionKey'  => $this->config['encryption_key'],
+                    'lang'           => $this->camelCaseKeys($this->config['lang']),
+                    'cookieSettings' => array(
                         'domain'           => $this->config['cookie_domain'],
                         'expirationInDays' => $this->config['cookie_expiration_in_days'],
                         'expiration'       => $this->config['cookie_expiration'],
