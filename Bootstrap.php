@@ -367,7 +367,7 @@ class Bootstrap
                 'encryption_key'    => base64_encode(str_rot13($this->config['site_name'])),
                 'cookie_expiration' => time() + (60 * 60 * 24 * $this->config['cookie_expiration_in_days']),
                 'cookie_domain'     => '.' . $this->removeWww($this->config['host']),
-                'allow_indexing'    => $this->config['production_mode'],
+                'enable_seo'        => $this->config['production_mode'],
             ),
         ), false);
 
@@ -543,7 +543,7 @@ class Bootstrap
             'global_vars' => array(
                 'environment'            => $this->environment,
                 'production_mode'        => $this->config['production_mode'],
-                'allow_indexing'         => $this->config['allow_indexing'],
+                'enable_seo'             => $this->config['enable_seo'],
                 'base_url'               => $this->config['base_url'], # because site_url is parsed late
                 'reserved_category_word' => $this->config['reserved_category_word'],
                 'default_template_group' => $this->config['default_template_group'],
@@ -552,7 +552,7 @@ class Bootstrap
                 'date_fmt_full'          => '%F %j %Y, %g:%i %a',
                 'json'                   => array(
                     'environment'    => $this->environment,
-                    'productionMode' => $this->config['production_mode'],
+                    'enableSeo'      => $this->config['enable_seo'],
                     'encryptionKey'  => $this->config['encryption_key'],
                     'lang'           => $this->camelCaseKeys($this->config['lang']),
                     'cookieSettings' => array(
