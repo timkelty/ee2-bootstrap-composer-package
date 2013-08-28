@@ -347,7 +347,6 @@ class Bootstrap
                 'site_name'                 => 'ExpressionEngine 2 Boilerplate',
                 'cookie_expiration_in_days' => 30,
                 'min_php_version'           => '5.3.3',
-                'app_version'               => '261',
                 'license_number'            => '',
                 'upload_preferences'        => array(),
                 'lang'                      => array(
