@@ -82,8 +82,10 @@ class Bootstrap
         }
 
         // Normalize to string to avoid version error
-        $this->config['app_version'] = (string) $this->config['app_version'];
         $this->config['debug'] = (string) $this->config['debug'];
+        if (isset($this->config['app_version'])) {
+            $this->config['app_version'] = (string) $this->config['app_version'];
+        }
 
         return $this->config;
     }
