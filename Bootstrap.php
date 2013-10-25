@@ -13,7 +13,8 @@ use Symfony\Component\Yaml\Yaml;
 class Bootstrap
 {
     private static $instance = false;
-    private $allowed_keys    = array('database_config', 'config', 'global_vars');
+    private $allowed_keys    = array('database_config', 'config', 'global_vars', 'debug');
+    private $debug           = 0;
 
     // Other public properties are set in setDefaults
     public $environment = 'development';
@@ -33,6 +34,20 @@ class Bootstrap
             $this->global_vars = $assign_to_config['global_vars'];
         }
         $assign_to_config['global_vars'] =& $this->global_vars;
+    }
+
+    /**
+     * Normalize properties on get
+     */
+    public function __get($property) {
+        if (property_exists($this, $property)) {
+            switch ($property) {
+                case 'debug':
+                    $this->$property = preg_match('/^n|0/', $this->$property) ? 0 : 1;
+                    break;
+            }
+            return $this->$property;
+        }
     }
 
     /**
@@ -83,6 +98,7 @@ class Bootstrap
 
         // Normalize to string to avoid version error
         $this->config['debug'] = (string) $this->config['debug'];
+
         if (isset($this->config['app_version'])) {
             $this->config['app_version'] = (string) $this->config['app_version'];
         }
@@ -430,9 +446,9 @@ class Bootstrap
                 // Debugging settings
                 'is_system_on'       => 'y',
                 'allow_extensions'   => 'y',
-                'email_debug'        => ($this->config['debug']) ? 'y' : 'n',
-                'show_profiler'      => (!$this->config['debug'] || (isset($_GET['D']) && $_GET['D'] == 'cp')) ? 'n' : 'y',
-                'template_debugging' => ($this->config['debug']) ? 'y' : 'n',
+                'email_debug'        => ($this->__get('debug')) ? 'y' : 'n',
+                'show_profiler'      => (!$this->__get('debug') || (isset($_GET['D']) && $_GET['D'] == 'cp')) ? 'n' : 'y',
+                'template_debugging' => ($this->__get('debug')) ? 'y' : 'n',
 
                 // Tracking & performance
                 'disable_all_tracking'        => 'y', # If set to 'y' some of the below settings are disregarded
