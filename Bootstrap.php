@@ -349,7 +349,7 @@ class Bootstrap
     {
         $this->set(array(
             'config' => array(
-                'production_mode'           => $this->environment == 'production',
+                'dev_mode'                  => $this->environment != "production",
                 'project_path'              => $this->createPath(realpath($_SERVER['DOCUMENT_ROOT'] . '/..')),
                 'protocol'                  => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://',
                 'host'                      => isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'],
@@ -384,7 +384,8 @@ class Bootstrap
                 'encryption_key'    => base64_encode(str_rot13($this->config['site_name'])),
                 'cookie_expiration' => time() + (60 * 60 * 24 * $this->config['cookie_expiration_in_days']),
                 'cookie_domain'     => '.' . $this->removeWww($this->config['host']),
-                'enable_seo'        => $this->config['production_mode'],
+                'enable_analytics'  => !$this->config['dev_mode'],
+                'enable_indexing'   => !$this->config['dev_mode'],
             ),
         ), false);
 
@@ -541,7 +542,7 @@ class Bootstrap
                     'cache_path'  => $this->config['public_cache_path'],
                     'cache_url'   => $this->config['public_cache_url'],
                     'minify_html' => 'yes',
-                    'disable'     => $this->config['production_mode'] ? 'no' : 'yes',
+                    'disable'     => $this->config['dev_mode'] ? 'yes' : 'no',
                 ),
 
                 // Assets
@@ -554,13 +555,14 @@ class Bootstrap
 
                 // Stash
                 'stash_file_basepath' => $this->config['app_path'] . 'stash_templates/',
-                'stash_file_sync'     => !$this->config['production_mode'],
+                'stash_file_sync'     => $this->config['dev_mode'],
 
             ),
             'global_vars' => array(
                 'environment'            => $this->environment,
-                'production_mode'        => $this->config['production_mode'],
-                'enable_seo'             => $this->config['enable_seo'],
+                'dev_mode'               => $this->config['dev_mode'],
+                'enable_analytics'       => $this->config['enable_analytics'],
+                'enable_indexing'        => $this->config['enable_indexing'],
                 'base_url'               => $this->config['base_url'], # because site_url is parsed late
                 'reserved_category_word' => $this->config['reserved_category_word'],
                 'default_template_group' => $this->config['default_template_group'],
@@ -568,11 +570,12 @@ class Bootstrap
                 'date_fmt_time'          => '%g:%i %a',
                 'date_fmt_full'          => '%F %j %Y, %g:%i %a',
                 'json'                   => array(
-                    'environment'    => $this->environment,
-                    'enableSeo'      => $this->config['enable_seo'],
-                    'encryptionKey'  => $this->config['encryption_key'],
-                    'lang'           => $this->camelCaseKeys($this->config['lang']),
-                    'cookieSettings' => array(
+                    'environment'     => $this->environment,
+                    'enableAnalytics' => $this->config['enable_analytics'],
+                    'enableIndexing'  => $this->config['enable_indexing'],
+                    'encryptionKey'   => $this->config['encryption_key'],
+                    'lang'            => $this->camelCaseKeys($this->config['lang']),
+                    'cookieSettings'  => array(
                         'domain'           => $this->config['cookie_domain'],
                         'expirationInDays' => $this->config['cookie_expiration_in_days'],
                         'expiration'       => $this->config['cookie_expiration'],
