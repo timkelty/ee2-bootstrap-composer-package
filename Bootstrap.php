@@ -259,29 +259,15 @@ class Bootstrap
     }
 
     /**
-     * Get EE/CI Timezone code
-     * @return string timezone code (e.g. UM5)
+     * Get PHP Timezone code
+     * @param  string $datetime A date/time string
+     * @return string           timezone code (e.g. America/Detroit)
      */
-    private function getTimeZoneCode()
+    private function getTimeZoneCode($datetime = 'now')
     {
-        $date = new \DateTime('now');
-        $offset = $date->getOffset() / 60 / 60;
-        $dst = (bool) date('I');
-        $code = 'UTC';
-
-        if ($dst) {
-            $offset -= 1;
-        }
-        if ($offset < 0) {
-            $code = 'UM';
-        } elseif ($offset > 0) {
-            $code = 'UP';
-        }
-        if ($offset !== 0) {
-            $code .= str_replace('.', '', abs($offset));
-        }
-
-        return $code;
+        $date = new \DateTime($datetime);
+        $tz = $date->getTimezone();
+        return $tz->getName();
     }
 
     /**
@@ -470,6 +456,7 @@ class Bootstrap
                 // Localization
                 'default_site_dst'          => $this->config['daylight_savings'],
                 'default_site_timezone'     => $this->config['server_timezone'],
+                'tz_country'                => 'us',
                 'time_format'               => 'us',
                 'server_offset'             => '',
                 'allow_member_localization' => 'n',
