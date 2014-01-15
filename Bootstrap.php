@@ -325,6 +325,18 @@ class Bootstrap
     }
 
     /**
+     * Get last deployed date, by looking for the Capistrano release directory
+     */
+    private function getLastDeployDate()
+    {
+        $realpath = realpath($_SERVER['DOCUMENT_ROOT']);
+        $date = preg_match('@\d{14}@', $realpath, $matches);
+        $date = !empty($matches) ? $matches[0] : time();
+
+        return $date;
+    }
+
+    /**
      * Set defaults, but do not overwrite exiting values.
      * Order is important here, since we can't use properties until they're set.
      * Saving properties in stages lets us use the results in subsequent values.
@@ -352,6 +364,7 @@ class Bootstrap
                 'cookie_expiration_in_days' => 30,
                 'min_php_version'           => '5.3.3',
                 'license_number'            => '',
+                'last_deploy_date'          => $this->getLastDeployDate(),
                 'upload_preferences'        => array(),
                 'lang'                      => array(
                     'no_results' => 'No results found.',
@@ -562,6 +575,7 @@ class Bootstrap
                     'enableIndexing'  => $this->config['enable_indexing'],
                     'encryptionKey'   => $this->config['encryption_key'],
                     'lang'            => $this->camelCaseKeys($this->config['lang']),
+                    'lastDeployDate'  => $this->config['last_deploy_date'],
                     'cookieSettings'  => array(
                         'domain'           => $this->config['cookie_domain'],
                         'expirationInDays' => $this->config['cookie_expiration_in_days'],
