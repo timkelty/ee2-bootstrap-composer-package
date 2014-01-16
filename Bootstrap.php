@@ -570,8 +570,8 @@ class Bootstrap
                 'date_fmt_time'          => '%g:%i %a',
                 'date_fmt_full'          => '%F %j %Y, %g:%i %a',
                 'json'                   => array(
-                    'devMode'         => $this->dev_mode,
                     'environment'     => $this->environment,
+                    'devMode'         => $this->config['dev_mode'],
                     'enableAnalytics' => $this->config['enable_analytics'],
                     'enableIndexing'  => $this->config['enable_indexing'],
                     'encryptionKey'   => $this->config['encryption_key'],
