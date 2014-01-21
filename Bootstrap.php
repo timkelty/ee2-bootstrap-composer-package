@@ -531,6 +531,7 @@ class Bootstrap
                 'ce_image_memory_limit'      => 64,
                 'ce_image_remote_cache_time' => 1440,
                 'ce_image_quality'           => 90,
+                'ce_image_interlace'         => 'yes',
                 'ce_image_disable_xss_check' => 'no',
 
                 // Playa
