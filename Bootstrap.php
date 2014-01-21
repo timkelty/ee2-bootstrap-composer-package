@@ -43,7 +43,7 @@ class Bootstrap
         if (property_exists($this, $property)) {
             switch ($property) {
                 case 'debug':
-                    $this->$property = preg_match('/^n|0/', $this->$property) ? 0 : 1;
+                    $this->$property = preg_match('/^y|1/', (string) $this->$property) ? 1 : 0;
                     break;
             }
             return $this->$property;
@@ -294,20 +294,13 @@ class Bootstrap
         return $camelCaseArray;
     }
 
-    private function createPath($path, $remove_base_path = false)
+    private function createPath($path)
     {
         $path = $this->removeDoubleSlashes($path);
 
         // Expand path
         if (realpath($path)) {
             $path = realpath($path);
-        }
-
-        // Trim off the base path off
-        if ($remove_base_path && isset($this->config['base_path'])) {
-            $pattern = '@^' . preg_quote($this->config['base_path'], '/') . '@';
-            $path = preg_replace($pattern, '', $path);
-            $path = '/' . ltrim($path, '/');
         }
 
         return rtrim($path, '/') . '/';
@@ -366,6 +359,7 @@ class Bootstrap
                 'license_number'            => '',
                 'last_deploy_date'          => $this->getLastDeployDate(),
                 'upload_preferences'        => array(),
+                'output_debug'              => isset($_GET['debug']) && !(isset($_GET['D']) && $_GET['D'] == 'cp'),
                 'lang'                      => array(
                     'no_results' => 'No results found.',
                     'ajax_fail'  => 'There was a problem with your request. Please try reload and try again.',
@@ -390,17 +384,18 @@ class Bootstrap
 
         $this->set(array(
             'config' => array(
-                'system_path'         => $this->config['vendor_path'] . 'ee/system/',
-                'public_storage_path' => $this->config['base_path'] . $this->config['upload_dir_name'] . '/',
-                'public_storage_url'  => $this->config['base_url'] . $this->config['upload_dir_name'] . '/',
+                'system_path'           => $this->config['vendor_path'] . 'ee/system/',
+                'public_storage_path'   => $this->config['base_path'] . $this->config['upload_dir_name'] . '/',
+                'public_storage_url'    => $this->config['base_url'] . $this->config['upload_dir_name'] . '/',
+                'public_cache_dir_name' => $this->config['upload_dir_name'] . '/cache',
             ),
         ), false);
 
         $this->set(array(
             'config' => array(
                 'ee_cache_path'     => $this->config['system_path'] . 'cache/',
-                'public_cache_path' => $this->config['public_storage_path'] . 'cache/',
-                'public_cache_url'  => $this->config['public_storage_url'] . 'cache/',
+                'public_cache_path' => $this->config['base_path'] . $this->config['public_cache_dir_name'] . '/',
+                'public_cache_url'  => $this->config['base_url'] . $this->config['public_cache_dir_name'] . '/',
                 'ee_images_path'    => $this->config['public_storage_path'] . 'members/',
                 'ee_images_url'     => $this->config['public_storage_url'] . 'members/',
             ),
@@ -444,11 +439,12 @@ class Bootstrap
                 'tmpl_file_basepath'  => $this->config['app_path'] . 'templates/',
 
                 // Debugging settings
+                // "debug" query string needs to be present for front-end debugging
                 'is_system_on'       => 'y',
                 'allow_extensions'   => 'y',
-                'email_debug'        => ($this->__get('debug')) ? 'y' : 'n',
-                'show_profiler'      => (!$this->__get('debug') || (isset($_GET['D']) && $_GET['D'] == 'cp')) ? 'n' : 'y',
-                'template_debugging' => ($this->__get('debug')) ? 'y' : 'n',
+                'email_debug'        => $this->__get('debug') ? 'y' : 'n',
+                'show_profiler'      => $this->config['output_debug'] ? 'y' : 'n',
+                'template_debugging' => $this->config['output_debug'] ? 'y' : 'n',
 
                 // Tracking & performance
                 'disable_all_tracking'        => 'y', # If set to 'y' some of the below settings are disregarded
@@ -526,8 +522,8 @@ class Bootstrap
 
                 // CE Image
                 'ce_image_document_root'     => $this->config['base_path'],
-                'ce_image_cache_dir'         => $this->createPath($this->config['public_cache_path'] . 'made/', true),
-                'ce_image_remote_dir'        => $this->createPath($this->config['public_cache_path'] . 'remote/', true),
+                'ce_image_cache_dir'         => '/' . $this->config['public_cache_dir_name'] . '/made/',
+                'ce_image_remote_dir'        => '/' . $this->config['public_cache_dir_name'] . '/remote/',
                 'ce_image_memory_limit'      => 64,
                 'ce_image_remote_cache_time' => 1440,
                 'ce_image_quality'           => 90,
@@ -588,4 +584,3 @@ class Bootstrap
         ), false);
     }
 }
-
