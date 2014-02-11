@@ -551,8 +551,10 @@ class Bootstrap
                 'low_variables_file_path'     => $this->config['app_path'] . 'low_variables/',
 
                 // Stash
-                'stash_file_basepath' => $this->config['app_path'] . 'stash_templates/',
-                'stash_file_sync'     => $this->config['dev_mode'],
+                'stash_file_basepath'   => $this->config['app_path'] . 'stash_templates/',
+                'stash_file_sync'       => $this->config['dev_mode'],
+                'stash_static_basepath' => $this->config['base_path'] . 'static/',
+                'stash_static_url'      => $this->config['base_url'] . 'static/',
 
             ),
             'global_vars' => array(
