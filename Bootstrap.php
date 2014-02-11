@@ -553,8 +553,8 @@ class Bootstrap
                 // Stash
                 'stash_file_basepath'   => $this->config['app_path'] . 'stash_templates/',
                 'stash_file_sync'       => $this->config['dev_mode'],
-                'stash_static_basepath' => $this->config['base_path'] . 'static/',
-                'stash_static_url'      => $this->config['base_url'] . 'static/',
+                'stash_static_basepath' => $this->config['public_storage_path'] . 'static/',
+                'stash_static_url'      => $this->config['public_storage_url'] . 'static/',
 
             ),
             'global_vars' => array(
