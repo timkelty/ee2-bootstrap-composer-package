@@ -374,7 +374,7 @@ class Bootstrap
                 'config_path'       => $this->config['project_path'] . 'config/',
                 'base_path'         => $this->config['project_path'] . 'public/',
                 'base_url'          => $this->config['protocol'] . $this->config['host'] . '/',
-                'encryption_key'    => base64_encode(str_rot13($this->config['site_name'])),
+                'encryption_key'    => md5(base64_encode(str_rot13($this->config['site_name']))),
                 'cookie_expiration' => time() + (60 * 60 * 24 * $this->config['cookie_expiration_in_days']),
                 'cookie_domain'     => '.' . $this->removeWww($this->config['host']),
                 'enable_analytics'  => !$this->config['dev_mode'],
