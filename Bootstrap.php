@@ -148,9 +148,6 @@ class Bootstrap
 
         // Defaults
         $this->setDefaults();
-
-        // Global vars
-        $this->global_vars = $this->getGlobalVars();
     }
 
     /**
