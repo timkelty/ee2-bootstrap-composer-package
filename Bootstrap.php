@@ -562,8 +562,8 @@ class Bootstrap
                 'reserved_category_word' => $this->config['reserved_category_word'],
                 'default_template_group' => $this->config['default_template_group'],
                 'date_fmt'               => '%F %j, %Y',
-                'date_fmt_time'          => '%g:%i%a',
-                'date_fmt_full'          => '%F %j %Y, %g:%i%a',
+                'date_fmt_time'          => '%g:%i %a',
+                'date_fmt_full'          => '%F %j %Y, %g:%i %a',
                 'json'                   => array(
                     'environment'     => $this->environment,
                     'devMode'         => $this->config['dev_mode'],
