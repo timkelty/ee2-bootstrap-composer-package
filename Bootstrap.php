@@ -264,6 +264,7 @@ class Bootstrap
     {
         $date = new \DateTime($datetime);
         $tz = $date->getTimezone();
+
         return $tz->getName();
     }
 
