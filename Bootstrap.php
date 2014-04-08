@@ -252,6 +252,7 @@ class Bootstrap
     private function removeWww($url)
     {
         $url = preg_replace('#^(http(s)?://)?w{$3}\.(\w+\.\w+)#', '$1$3', $url);
+
         return $url;
     }
 
