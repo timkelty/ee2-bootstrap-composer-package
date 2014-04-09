@@ -103,6 +103,11 @@ class Bootstrap
             $this->config['app_version'] = (string) $this->config['app_version'];
         }
 
+        // Set NewRelic app name
+        if (!isset($this->config['newrelic_app_name'])) {
+            $this->config['newrelic_app_name'] = $this->config['site_name'] . ' (' . $this->environment . ')';
+        }
+
         return $this->config;
     }
 
