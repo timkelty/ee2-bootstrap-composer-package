@@ -503,6 +503,7 @@ class Bootstrap
                 'autosave_interval_seconds' => '0', # 0: disables entry autosave
                 'password_lockout'          => 'n',
                 'cp_theme'                  => 'republic', # Republic CP
+                'use_mobile_control_panel'  => 'n',
                 'install_lock'              => '',
                 'doc_url'                   => "http://ellislab.com/expressionengine/user-guide/",
 
