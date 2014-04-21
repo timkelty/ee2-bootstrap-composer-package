@@ -461,9 +461,12 @@ class Bootstrap
                 'gzip_output'                 => 'n',
 
                 // Cookies & session
-                'cookie_path'        => '',
-                'user_session_type'  => 'c',
-                'admin_session_type' => 'c',
+                // These keys changed in EE 2.8, but I'm leaving both in just in case.
+                'cookie_path'          => '',
+                'user_session_type'    => 'c',
+                'website_session_type' => 'c',
+                'admin_session_type'   => 'c',
+                'cp_session_type'      => 'c',
 
                 // Localization
                 'default_site_dst'          => $this->config['daylight_savings'],
@@ -489,7 +492,7 @@ class Bootstrap
                 'site_404'                  => $this->config['default_template_group'] . '/404',
                 'save_tmpl_files'           => 'y',
                 'hidden_template_indicator' => '_',
-                'uri_protocol'              => 'PATH_INFO', # AUTO|PATH_INFO|QUERY_STRING|REQUEST_URI|ORIG_PATH_INFO
+                'uri_protocol'              => 'AUTO', # AUTO|PATH_INFO|QUERY_STRING|REQUEST_URI|ORIG_PATH_INFO
                 'enable_query_strings'      => TRUE,
                 'permitted_uri_chars'       => 'a-z 0-9~%.:_\\-',
 
