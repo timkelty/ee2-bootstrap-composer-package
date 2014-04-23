@@ -562,7 +562,7 @@ class Bootstrap
                 'stash_file_sync'       => $this->config['dev_mode'],
                 'stash_static_basepath' => $this->config['public_storage_path'] . 'static/',
                 'stash_static_url'      => $this->config['public_storage_url'] . 'static/',
-
+                'stash_limit_bots'      => true,
             ),
             'global_vars' => array(
                 'environment'            => $this->environment,
