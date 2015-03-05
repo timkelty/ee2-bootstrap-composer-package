@@ -541,13 +541,12 @@ class Bootstrap
                 'playa_site_index' => $this->config['base_url'],
 
                 // Minimee
-                'minimee' => array(
-                    'base_path'   => $this->config['base_path'],
-                    'cache_path'  => $this->config['public_cache_path'],
-                    'cache_url'   => $this->config['public_cache_url'],
-                    'minify_html' => 'yes',
-                    'disable'     => $this->config['dev_mode'] ? 'yes' : 'no',
-                ),
+                'minimee_cache_path'  => $this->config['public_cache_path'],
+                'minimee_cache_url'   => $this->config['public_cache_url'],
+                'minimee_base_path'   => $this->config['base_path'],
+                'minimee_debug'       => 'n',
+                'minimee_disable'     => $this->config['dev_mode'] ? 'y' : 'n',
+                'minimee_remote_mode' => 'auto',
 
                 // Assets
                 'assets_site_url' => '/index.php',
