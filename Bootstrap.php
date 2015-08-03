@@ -396,7 +396,7 @@ class Bootstrap
 
         $this->set(array(
             'config' => array(
-                'ee_cache_path'     => $this->config['system_path'] . 'cache/',
+                'ee_cache_path'     => $this->config['system_path'] . 'expressionengine/cache/',
                 'public_cache_path' => $this->config['base_path'] . $this->config['public_cache_dir_name'] . '/',
                 'public_cache_url'  => $this->config['base_url'] . $this->config['public_cache_dir_name'] . '/',
                 'ee_images_path'    => $this->config['public_storage_path'] . 'members/',
