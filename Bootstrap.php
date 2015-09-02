@@ -490,7 +490,7 @@ class Bootstrap
                 'use_category_name'         => 'y',
                 'word_separator'            => 'dash', # dash|underscore
                 'strict_urls'               => 'y',
-                'site_404'                  => $this->config['default_template_group'] . '/404',
+                'site_404'                  => $this->config['template_group'] . '/404',
                 'save_tmpl_files'           => 'y',
                 'hidden_template_indicator' => '_',
                 'uri_protocol'              => 'AUTO', # AUTO|PATH_INFO|QUERY_STRING|REQUEST_URI|ORIG_PATH_INFO
@@ -571,23 +571,10 @@ class Bootstrap
                 'enable_indexing'        => $this->config['enable_indexing'],
                 'base_url'               => $this->config['base_url'], # because site_url is parsed late
                 'reserved_category_word' => $this->config['reserved_category_word'],
-                'default_template_group' => $this->config['default_template_group'],
+                'default_template_group' => $this->config['template_group'],
                 'date_fmt'               => '%F %j, %Y',
                 'date_fmt_time'          => '%g:%i %a',
                 'date_fmt_full'          => '%F %j %Y, %g:%i %a',
-                'json'                   => array(
-                    'environment'     => $this->environment,
-                    'devMode'         => $this->config['dev_mode'],
-                    'enableAnalytics' => $this->config['enable_analytics'],
-                    'enableIndexing'  => $this->config['enable_indexing'],
-                    'lang'            => $this->camelCaseKeys($this->config['lang']),
-                    'lastDeployDate'  => $this->config['last_deploy_date'],
-                    'cookieSettings'  => array(
-                        'domain'           => $this->config['cookie_domain'],
-                        'expirationInDays' => $this->config['cookie_expiration_in_days'],
-                        'expiration'       => $this->config['cookie_expiration'],
-                    ),
-                ),
             )
         ), false);
     }
