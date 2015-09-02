@@ -506,6 +506,7 @@ class Bootstrap
                 'use_mobile_control_panel'  => 'n',
                 'install_lock'              => '',
                 'doc_url'                   => "http://ellislab.com/expressionengine/user-guide/",
+                'cache_driver'              => 'file',
 
                 // CodeIgniter
                 'url_suffix'           => '',
